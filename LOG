@@ -1,0 +1,5 @@
+[13 oktober 2014]
++ db collumn jabatan,jenjang di tabel pengguna
+
+ALTER TABLE `pengguna` ADD COLUMN `jabatan` VARCHAR(50) NULL DEFAULT NULL AFTER `nomor_induk`;
+ALTER TABLE `pengguna` ADD COLUMN `jenjang` VARCHAR(50) NULL DEFAULT NULL AFTER `jabatan`;

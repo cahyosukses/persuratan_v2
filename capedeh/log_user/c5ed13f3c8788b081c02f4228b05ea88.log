@@ -1,0 +1,53 @@
+Log akses dibuat untuk username : 0008085009 (pada 27-05-2014 08:32:49). IP : 202.67.43.13, browser : Safari/Chrome versi : 537.36, OS : Windows 7
+====================
+
+[27-05-2014 08:33:17] : LOG IN Sukses. IP : 202.67.43.13, browser : Safari/Chrome versi : 537.36, OS : Windows 7.
+[27-05-2014 08:33:27] : LOG OUT Sukses. IP : 202.67.43.13, browser : Safari/Chrome versi : 537.36, OS : Windows 7.
+[27-05-2014 08:38:13] : LOG IN Sukses. IP : 202.67.43.13, browser : Safari/Chrome versi : 537.36, OS : Windows 7.
+[27-05-2014 08:41:16] : LOG OUT Sukses. IP : 202.67.43.13, browser : Safari/Chrome versi : 537.36, OS : Windows 7.
+[27-05-2014 11:18:47] : LOG IN Sukses. IP : 202.67.42.14, browser : Mozilla Firefox versi : 30.0, OS : Windows 7.
+[27-05-2014 11:19:08] : LOG OUT Sukses. IP : 202.67.42.14, browser : Mozilla Firefox versi : 30.0, OS : Windows 7.
+[27-05-2014 11:19:21] : LOG IN Sukses. IP : 202.67.42.14, browser : Mozilla Firefox versi : 30.0, OS : Windows 7.
+[27-05-2014 11:37:40] : LOG IN Sukses. IP : 110.76.149.147, browser : Safari/Chrome versi : 537.36, OS : Windows 7.
+[27-05-2014 11:58:18] : LOG OUT Sukses. IP : 202.67.42.14, browser : Mozilla Firefox versi : 30.0, OS : Windows 7.
+[28-05-2014 12:02:37] : LOG OUT Sukses. IP : 110.76.149.147, browser : Safari/Chrome versi : 537.36, OS : Windows 7.
+[28-05-2014 12:35:01] : LOG IN Sukses. IP : 202.67.42.23, browser : Mozilla Firefox versi : 30.0, OS : Windows 7.
+[28-05-2014 12:36:04] : LOG OUT Sukses. IP : 202.67.42.23, browser : Mozilla Firefox versi : 30.0, OS : Windows 7.
+[28-05-2014 12:39:37] : LOG IN Sukses. IP : 202.67.42.23, browser : Mozilla Firefox versi : 30.0, OS : Windows 7.
+[28-05-2014 12:46:16] : LOG OUT Sukses. IP : 202.67.42.23, browser : Mozilla Firefox versi : 30.0, OS : Windows 7.
+[30-05-2014 07:48:43] : LOG IN Sukses. IP : ::1, browser : Mozilla Firefox versi : 29.0, OS : Windows 7.
+[30-05-2014 07:49:54] : LOG OUT Sukses. IP : ::1, browser : Mozilla Firefox versi : 29.0, OS : Windows 7.
+[09-06-2014 10:14:21] : LOG IN Sukses. IP : ::1, browser : Mozilla Firefox versi : 29.0, OS : Windows 7.
+[10-06-2014 04:04:41] : LOG IN Sukses. IP : ::1, browser : Mozilla Firefox versi : 29.0, OS : Windows 7.
+[05-10-2014 06:56:26] : LOG IN Sukses. IP : 127.0.0.1, browser : Safari/Chrome versi : 537.36, OS : linux.
+[05-10-2014 06:56:37] : LOG OUT Sukses. IP : 127.0.0.1, browser : Safari/Chrome versi : 537.36, OS : linux.
+[05-10-2014 06:58:05] : LOG IN Sukses. IP : 127.0.0.1, browser : Safari/Chrome versi : 537.36, OS : linux.
+[05-10-2014 08:44:02] : LOG OUT Sukses. IP : 127.0.0.1, browser : Safari/Chrome versi : 537.36, OS : linux.
+[06-10-2014 01:12:57] : LOG IN Sukses. IP : 127.0.0.1, browser : Safari/Chrome versi : 537.36, OS : linux.
+[06-10-2014 01:19:49] : LOG OUT Sukses. IP : 127.0.0.1, browser : Safari/Chrome versi : 537.36, OS : linux.
+[06-10-2014 01:31:47] : LOG IN Sukses. IP : 127.0.0.1, browser : Safari/Chrome versi : 537.36, OS : linux.
+[06-10-2014 01:33:09] : LOG OUT Sukses. IP : 127.0.0.1, browser : Safari/Chrome versi : 537.36, OS : linux.
+[06-10-2014 01:34:12] : LOG IN Sukses. IP : 127.0.0.1, browser : Safari/Chrome versi : 537.36, OS : linux.
+[06-10-2014 01:37:56] : LOG OUT Sukses. IP : 127.0.0.1, browser : Safari/Chrome versi : 537.36, OS : linux.
+[06-10-2014 02:13:34] : LOG IN Sukses. IP : 127.0.0.1, browser : Safari/Chrome versi : 537.36, OS : linux.
+[06-10-2014 02:15:01] : LOG OUT Sukses. IP : 127.0.0.1, browser : Safari/Chrome versi : 537.36, OS : linux.
+[06-10-2014 02:20:40] : LOG IN Sukses. IP : 127.0.0.1, browser : Safari/Chrome versi : 537.36, OS : linux.
+[06-10-2014 02:22:28] : LOG OUT Sukses. IP : 127.0.0.1, browser : Safari/Chrome versi : 537.36, OS : linux.
+[06-10-2014 02:36:24] : LOG IN Sukses. IP : 127.0.0.1, browser : Safari/Chrome versi : 537.36, OS : linux.
+[06-10-2014 02:37:12] : LOG OUT Sukses. IP : 127.0.0.1, browser : Safari/Chrome versi : 537.36, OS : linux.
+[06-10-2014 01:11:37] : LOG IN Sukses. IP : 127.0.0.1, browser : Mozilla Firefox versi : 32.0, OS : linux.
+[06-10-2014 01:18:47] : LOG OUT Sukses. IP : 127.0.0.1, browser : Mozilla Firefox versi : 32.0, OS : linux.
+[06-10-2014 01:35:57] : LOG IN Sukses. IP : 127.0.0.1, browser : Mozilla Firefox versi : 32.0, OS : linux.
+[06-10-2014 01:55:37] : LOG OUT Sukses. IP : 127.0.0.1, browser : Mozilla Firefox versi : 32.0, OS : linux.
+[06-10-2014 02:43:39] : LOG IN Sukses. IP : 127.0.0.1, browser : Mozilla Firefox versi : 32.0, OS : linux.
+[06-10-2014 02:43:44] : LOG OUT Sukses. IP : 127.0.0.1, browser : Mozilla Firefox versi : 32.0, OS : linux.
+[06-10-2014 03:03:14] : LOG IN Sukses. IP : 127.0.0.1, browser : Mozilla Firefox versi : 32.0, OS : linux.
+[06-10-2014 03:29:09] : LOG OUT Sukses. IP : 127.0.0.1, browser : Mozilla Firefox versi : 32.0, OS : linux.
+[13-10-2014 12:02:57] : LOG IN Sukses. IP : 127.0.0.1, browser : Mozilla Firefox versi : 32.0, OS : linux.
+[13-10-2014 12:04:35] : LOG OUT Sukses. IP : 127.0.0.1, browser : Mozilla Firefox versi : 32.0, OS : linux.
+[13-10-2014 12:17:04] : LOG IN Sukses. IP : 127.0.0.1, browser : Mozilla Firefox versi : 32.0, OS : linux.
+[13-10-2014 12:17:46] : LOG OUT Sukses. IP : 127.0.0.1, browser : Mozilla Firefox versi : 32.0, OS : linux.
+[14-10-2014 02:15:55] : LOG IN Sukses. IP : 127.0.0.1, browser : Safari/Chrome versi : 537.36, OS : linux.
+[14-10-2014 02:20:10] : LOG OUT Sukses. IP : 127.0.0.1, browser : Safari/Chrome versi : 537.36, OS : linux.
+[24-10-2014 10:45:33] : LOG IN Sukses. IP : 127.0.0.1, browser : Mozilla Firefox versi : 33.0, OS : linux.
+[24-10-2014 10:45:49] : LOG OUT Sukses. IP : 127.0.0.1, browser : Mozilla Firefox versi : 33.0, OS : linux.

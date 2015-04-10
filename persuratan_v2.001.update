@@ -1,0 +1,3 @@
+UPDATE menu SET nama = 'Kode Surat', url = 'kode_surat' WHERE id = 14
+ALTER TABLE `instansi`	ADD COLUMN `background_logo` VARCHAR(100) NOT NULL AFTER `logo`;
+ALTER TABLE `instansi`	ADD COLUMN `login_logo_header` VARCHAR(100) NOT NULL AFTER `background_logo`;
