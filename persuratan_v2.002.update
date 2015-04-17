@@ -1,0 +1,26 @@
+CREATE TABLE `disposisi_pelaporan` (
+	`id` INT(11) NOT NULL AUTO_INCREMENT,
+	`dari_user` INT(11) NOT NULL DEFAULT '0',
+	`penerima` VARCHAR(10) NOT NULL DEFAULT '0',
+	`penerima_user` INT(11) NOT NULL DEFAULT '0',
+	`perihal` VARCHAR(50) NOT NULL,
+	`catatan` TEXT NOT NULL,
+	`file` VARCHAR(50) NOT NULL,
+	`tgl_kirim` DATE NOT NULL,
+	`status_periksa` ENUM('Y','N') NOT NULL DEFAULT 'N',
+	PRIMARY KEY (`id`)
+)
+COMMENT='melaporkan hasil dari tujuan disposisi'
+COLLATE='latin1_swedish_ci'
+ENGINE=InnoDB
+AUTO_INCREMENT=1
+;
+
+
+
+
+INSERT INTO `menu` (`id`, `sub_dari`, `nama`, `url`, `icon`) VALUES (8, 'surat', 'Pelaporan', 'pelaporan', 'align-left');
+
+UPDATE pengguna SET id_menu=CONCAT(id_menu,'8,') WHERE apps <> 'instansi';
+
+UPDATE pengguna SET id_menu = '1,2,9,13,14,' WHERE level = 'admin root';

@@ -529,19 +529,19 @@ class Instansi extends CI_Controller {
 			
 			if($level == "admin root") {
 				
-				$menu_yang_ok = "1,2,9,";
+				$menu_yang_ok = "1,2,9,13,14,";
 				
 			} else if ($level == "pimpinan") {
 				
-				$menu_yang_ok = "3,4,5,6,7,";
+				$menu_yang_ok = "3,4,5,6,7,8,";
 				
 			} else if ($level == "tata usaha") {
 				
-				$menu_yang_ok = "3,4,7,12,";
+				$menu_yang_ok = "3,4,7,8,12,";
 				
 			} else if ($level == "staff") {
 				
-				$menu_yang_ok = "5,6,7,";
+				$menu_yang_ok = "5,6,7,8,";
 				
 			}
 			
@@ -566,13 +566,13 @@ class Instansi extends CI_Controller {
 		} else if ($mau_ke == "aksi_tambah") {
 			$menu_yang_ok	= "";
 			if($level == "admin root") {
-				$menu_yang_ok = "1,2,9,";
+				$menu_yang_ok = "1,2,9,13,14,";
 			} else if ($level == "pimpinan") {
-				$menu_yang_ok = "3,4,5,6,7,";
+				$menu_yang_ok = "3,4,5,6,7,8,";
 			} else if ($level == "tata usaha") {
-				$menu_yang_ok = "3,4,7,12,";
+				$menu_yang_ok = "3,4,7,8,12,";
 			} else if ($level == "staff") {
-				$menu_yang_ok = "5,6,7,";
+				$menu_yang_ok = "5,6,7,8,";
 			}
 			
 			$cek_tersedia	= $this->db->query("SELECT id FROM pengguna
@@ -692,13 +692,13 @@ class Instansi extends CI_Controller {
 						$level			= $xl_data->val($i, 6);
 						
 						if($level == "admin root") {
-							$menu_yang_ok = "1,2,9,";
+							$menu_yang_ok = "1,2,9,13,14,";
 						} else if ($level == "pimpinan") {
-							$menu_yang_ok = "3,4,5,6,7,";
+							$menu_yang_ok = "3,4,5,6,7,8,";
 						} else if ($level == "tata usaha") {
-							$menu_yang_ok = "3,4,7,12,";
+							$menu_yang_ok = "3,4,7,8,12,";
 						} else if ($level == "staff") {
-							$menu_yang_ok = "5,6,7,";
+							$menu_yang_ok = "5,6,7,8,";
 						}
 						
 						$id_menu 		= $menu_yang_ok;

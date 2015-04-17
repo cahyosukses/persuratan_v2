@@ -4,14 +4,14 @@
 
     <meta http-equiv="Content-type" content="text/html; charset=UTF-8">    
 	<link rel="stylesheet" href="<?php echo base_URL() . 'aset/'?>new_login/style.css" type="text/css">
-		
+	<link rel="stylesheet" href="<?php echo base_URL() . 'aset/'?>new_login/jquery.modal.css" type="text/css">		    
     <link rel="shortcut icon" href="<?php echo base_URL() . 'aset/'?>new_login/favicon.ico" type="image/x-icon">
-    <script src="<?php echo base_URL() . 'aset/'?>new_login/jquery-1.js" type="text/javascript"></script> 
-
     <link rel="stylesheet" href="tracksurat_files/validationEngine.css" type="text/css">
+
+    <script src="<?php echo base_URL() . 'aset/'?>new_login/jquery-1.js" type="text/javascript"></script>     
     <script src="<?php echo base_URL() . 'aset/'?>new_login/jquery.js" type="text/javascript"></script>
     <script src="<?php echo base_URL() . 'aset/'?>new_login/jquery_002.js" type="text/javascript"></script>
-
+    <script src="<?php echo base_URL() . 'aset/'?>new_login/jquery.modal.min.js" type="text/javascript"></script>
     <script src="<?php echo base_URL() . 'aset/'?>new_login/main.js" type="text/javascript"></script>
 	
 		
@@ -47,7 +47,62 @@
 </head>
 <body style="background-color:#d6e3ef">
 
-	<div style="width:1000px;margin:0 auto;background-color:white;min-height:460px">
+	<!-- Modal HTML embedded directly into document -->
+	  <div id="ex1" style="display:none;">
+	    	<form id="main_form" method="POST" action="<?php echo base_URL() . 'dashboard/auth_download';?>">				
+				<input id="f_jenis" type="hidden" name="jenis" value="">
+				<input id="f_is_attachment" type="hidden" name="is_attachment" value="">
+				<input id="f_id" type="hidden" name="id" value="">
+
+				<table style="width:100%;margin-top:10px">
+					<tbody>
+						<tr>							
+							<td style="padding:20px;width:300px;">
+								<div class="section">									
+								<h2 style="text-align:center">Username dan Password Diperlukan</h2>
+								<table style="margin-left:50px">
+									<tbody>
+										<tr>
+											<td style="vertical-align:middle;padding-right:5px">
+												Username
+											</td>
+											<td style="vertical-align:middle">
+												<input style="background-image: url(&quot;data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAASCAYAAABSO15qAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH3QsPDhss3LcOZQAAAU5JREFUOMvdkzFLA0EQhd/bO7iIYmklaCUopLAQA6KNaawt9BeIgnUwLHPJRchfEBR7CyGWgiDY2SlIQBT/gDaCoGDudiy8SLwkBiwz1c7y+GZ25i0wnFEqlSZFZKGdi8iiiOR7aU32QkR2c7ncPcljAARAkgckb8IwrGf1fg/oJ8lRAHkR2VDVmOQ8AKjqY1bMHgCGYXhFchnAg6omJGcBXEZRtNoXYK2dMsaMt1qtD9/3p40x5yS9tHICYF1Vn0mOxXH8Uq/Xb389wff9PQDbQRB0t/QNOiPZ1h4B2MoO0fxnYz8dOOcOVbWhqq8kJzzPa3RAXZIkawCenHMjJN/+GiIqlcoFgKKq3pEMAMwAuCa5VK1W3SAfbAIopum+cy5KzwXn3M5AI6XVYlVt1mq1U8/zTlS1CeC9j2+6o1wuz1lrVzpWXLDWTg3pz/0CQnd2Jos49xUAAAAASUVORK5CYII=&quot;); background-repeat: no-repeat; background-attachment: scroll; background-position: right center;" name="u" id="username" size="20" class="validate[required]" required type="text">
+											</td>
+										</tr>
+										<tr>
+											<td style="vertical-align:middle;padding-right:5px">
+												Password
+											</td>
+											<td style="vertical-align:middle">
+												<input style="background-image: url(&quot;data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAASCAYAAABSO15qAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH3QsPDhss3LcOZQAAAU5JREFUOMvdkzFLA0EQhd/bO7iIYmklaCUopLAQA6KNaawt9BeIgnUwLHPJRchfEBR7CyGWgiDY2SlIQBT/gDaCoGDudiy8SLwkBiwz1c7y+GZ25i0wnFEqlSZFZKGdi8iiiOR7aU32QkR2c7ncPcljAARAkgckb8IwrGf1fg/oJ8lRAHkR2VDVmOQ8AKjqY1bMHgCGYXhFchnAg6omJGcBXEZRtNoXYK2dMsaMt1qtD9/3p40x5yS9tHICYF1Vn0mOxXH8Uq/Xb389wff9PQDbQRB0t/QNOiPZ1h4B2MoO0fxnYz8dOOcOVbWhqq8kJzzPa3RAXZIkawCenHMjJN/+GiIqlcoFgKKq3pEMAMwAuCa5VK1W3SAfbAIopum+cy5KzwXn3M5AI6XVYlVt1mq1U8/zTlS1CeC9j2+6o1wuz1lrVzpWXLDWTg3pz/0CQnd2Jos49xUAAAAASUVORK5CYII=&quot;); background-repeat: no-repeat; background-attachment: scroll; background-position: right center; cursor: auto;" name="p" id="password" size="20" required type="password">
+											</td>
+										</tr>
+										<tr>
+											<td>&nbsp;</td>
+											<td align="left">
+												<input class="btn_login" value="Download File" id="btnLogin" type="submit">												
+											</td>
+										</tr>
+										<tr>
+											<td colspan="2" height="30" align="center">
+												<div id="retMessage" class="widefat" style="background-color:#de5870;color:#fff;padding:2px;margin-top:3px;display:none"></div>
+											</td>
+										</tr>
+										
+									</tbody>
+								</table>
+
+								</div>
+								
+							</td>
+						</tr>
+					</tbody>
+				</table>				
+			</form>
+	  </div>
+
+  	<div style="width:1000px;margin:0 auto;background-color:white;min-height:460px">
 	<?php $q_instansi	= $this->db->query("SELECT * FROM instansi LIMIT 1")->row(); ?>
 	<img src="<?php echo base_url(); ?>upload/<?php echo $login_logo_header = empty($q_instansi->login_logo_header) ? "logo_login.jpg" : $q_instansi->login_logo_header; ?>" style="width:1000px;height:120px">
 
@@ -68,7 +123,7 @@
 					</select>
 					
 					<span style="width:120px;display:inline-block"></span>
-					<input value="Lihat" type="submit">
+					<input id="submit_search" value="Cari" type="submit">
 				</form>
 			</div>
 			<div>
@@ -108,7 +163,16 @@
 						<td>
 							<?php echo $cari->nomor."<br>(".tgl_jam_sql($cari->tgl_surat).")"?>
 						</td>
-						<td><?php echo $cari->perihal."<br><b>File : </b> ".$filenya.""?></td>
+						<td>
+							<?php $allow_download = $this->session->userdata('allow_download'); ?>
+							<?php if($allow_download){?>
+							<?php echo $cari->perihal."<br><b>File : </b> ".$filenya.""?>
+							<?php }else{ ?>
+							<?php $filenya   = empty($cari->file) ? "<div class='label label-warning'>Tidak tersedia</div>" : "<a rel='modal:open' class='label label-success' onclick=\"set_vars('surat_masuk','Y'," . $cari->id . ")\" href='#ex1'><b>Download / Lihat</b></a>";?>
+							<?php echo $cari->perihal."<br><b>File : </b> ".$filenya.""?>
+							<?php } ?>
+							
+						</td>
 						<td><?php echo "Dari : ".$cari->pengirim."<br>Penerima : ".$cari->penerimanya.""?></td>
 						<td class="ctr"><?php echo $read; ?></td>
 						<td class="ctr"><?php echo $lnjt; ?></td>
@@ -139,7 +203,19 @@
 				<?php }else{ ?>				
 					<?php foreach ($r_cari->result() as $cari){ ?>
 					<?php 
-						$filenya     = empty($cari->file) ? "<div class='label label-warning'>Tidak tersedia</div>" : "<a class='label label-success' href='".base_URL()."upload/surat_keluar/".$cari->file."' target='_blank'><b>Download / Lihat</b></a>";
+						$allow_download = $this->session->userdata('allow_download');
+						$filenya = null;
+						$format_surat = null;
+
+						if($allow_download){
+							$filenya     = empty($cari->file) ? "<div class='label label-warning'>Tidak tersedia</div>" : "<a class='label label-success' href='".base_URL()."upload/surat_keluar/".$cari->file."' target='_blank'><b>Download / Lihat</b></a>";
+							$format_surat = "<a class='label label-info' href='" . base_url() . "dashboard/pdf_report/" . $cari->id . "'><b>Download as PDF</b></a><br>";							
+						}else{
+							//jika belum masukin login
+							$filenya     = empty($cari->file) ? "<div class='label label-warning'>Tidak tersedia</div>" : "<a rel='modal:open' class='label label-success' onclick=\"set_vars('surat_keluar','Y'," . $cari->id . ")\" href='#ex1'><b>Download / Lihat</b></a>";
+							$format_surat = "<a rel='modal:open' class='label label-info' onclick=\"set_vars('surat_keluar','N'," . $cari->id . ")\" href='#ex1'><b>Download as PDF</b></a><br>";							
+						}						
+					
 						$no_surat    = empty($cari->no_surat) ? "<span class='label label-danger'>Belum diberi nomor</span>" : $cari->no_surat;
 						$stat_setuju = $cari->flag_setuju == "N" ? "<span class='label label-danger'>Belum diperiksa</span>" : "<span class='label label-success'>Sudah diperiksa dan setuju</span>";
 						$stat_keluar = $cari->flag_keluar == "N" ? "<span class='label label-danger'>Belum dikirim</span>" : "<span class='label label-success'>Sudah dikirim</span>";
@@ -149,8 +225,8 @@
 						<td class="ctr"><?php echo "<b>".$cari->no_agenda."</b><br><i>".tgl_jam_sql($cari->tgl_surat)."</i>";?></td>
 						<td>
 							<?=$no_surat."<br><b>Attachment : </b>".$filenya.""?><br>
-							<b>Format Surat : </b>
-							<a class="label label-info" href="<?php echo base_url() . 'dashboard/pdf_report/' . $cari->id;?>"><b>Download as PDF</b></a><br>
+							<b>Format Surat : </b><?php echo $format_surat;?>
+							
 						</td>
 						<td><?php echo $cari->perihal."<br><b>Penerima : </b>".$cari->penerima?></td>
 						<td><?php echo $stat_setuju." - ".$stat_keluar; ?></td>
@@ -169,5 +245,35 @@
 	<div style="width:1000px;margin:0 auto;background-color:#2c6a8b;color:white;height:100px;text-align:center;padding-top:10px">
 		<h4 style="color:white">E-Office © 2015</h4>
 	</div>
+
+	<script type="text/javascript">
+		
+		function set_vars(s_jenis,s_is_attachment,d_id) {
+			$("#f_jenis").val(s_jenis);   
+			$("#f_is_attachment").val(s_is_attachment);   
+			$("#f_id").val(d_id);   			
+		}
+
+		$('#main_form').submit(function(msg) {  	
+
+			$.post("<?php echo base_URL() . 'dashboard/auth_download'?>",
+				   $('#main_form').serialize(),
+				   function(data){	
+
+			});
+
+			
+			//$.modal.close();			
+			//location.replace(location.pathname);
+			//$('#submit_search').trigger('click');
+
+    	});
+
+    	$('#ex1').on($.modal.CLOSE, function(event, modal) {		 
+    		
+    		$('#submit_search').trigger('click');
+    		
+		});
+	</script>
 </body>
 </html>

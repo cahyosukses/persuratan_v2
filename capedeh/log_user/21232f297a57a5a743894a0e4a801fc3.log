@@ -223,3 +223,7 @@ Log akses dibuat untuk username : admin (pada 20-05-2014 02:14:03). IP : 127.0.0
 [30-03-2015 08:39:11] : LOG OUT Sukses. IP : 127.0.0.1, browser : Mozilla Firefox versi : 36.0, OS : linux.
 [10-04-2015 09:15:49] : LOG IN Sukses. IP : 127.0.0.1, browser : Safari/Chrome versi : 537.36, OS : linux.
 [10-04-2015 09:16:21] : LOG OUT Sukses. IP : 127.0.0.1, browser : Safari/Chrome versi : 537.36, OS : linux.
+[17-04-2015 01:58:32] : LOG IN Sukses. IP : 127.0.0.1, browser : Safari/Chrome versi : 537.36, OS : linux.
+[17-04-2015 02:03:36] : LOG OUT Sukses. IP : 127.0.0.1, browser : Safari/Chrome versi : 537.36, OS : linux.
+[17-04-2015 02:03:52] : LOG IN Sukses. IP : 127.0.0.1, browser : Safari/Chrome versi : 537.36, OS : linux.
+[17-04-2015 02:04:26] : LOG OUT Sukses. IP : 127.0.0.1, browser : Safari/Chrome versi : 537.36, OS : linux.

@@ -9,26 +9,12 @@
             <ul class="nav navbar-nav">
                <li><a href="<?php echo base_URL().$admin_apps; ?>/konsep/add" class="btn-info"><i class="fa fa-edit fa-fw"> </i> Buat Konsep</a></li>
             </ul>
-            <!--
-               <ul class="nav navbar-nav">
-               	<li>
-               		<div class="btn-group">
-               			<a href="<?php echo base_URL().$admin_apps; ?>/konsep/add" class="btn btn-info btn-large"><i class="fa fa-edit fa-fw"> </i> Buat Konsep</a>
-               			<!---
-               			
-               			<ul class="dropdown-menu">
-               				<li><a href="#"><i class="fa fa-th-list"> </i> Biasa</a></li>
-               				<li><a href="<?php echo base_URL().$admin_apps; ?>/konsep/add"><i class="fa fa-upload"> </i> Dengan File Upload</a></li>
-               			</ul>
-               		</div>
-               	</li>
-               </ul>-->
             <div class="navbar-collapse collapse navbar-inverse-collapse" >
                <ul class="nav navbar-nav navbar-right">
                   <form class="navbar-form" method="post" action="<?=base_URL().$admin_apps?>/konsep/cari">
                      <input type="text" class="form-control" name="q" style="width: 200px" value="<?php echo isset($cari) ? $cari : '';?>" placeholder="Kata kunci pencarian ..." required>
                      <button type="submit" class="btn btn-info"><i class="fa fa-search fa-fw"> </i> Cari</button>
-					 <a href="<?php echo base_url() . $admin_apps . '/konsep';?>"><button type="button" class="btn btn-info"><i class="fa fa-times fa-fw"> </i> Clear</button></a>
+					       <a href="<?php echo base_url() . $admin_apps . '/konsep';?>"><button type="button" class="btn btn-info"><i class="fa fa-times fa-fw"> </i> Clear</button></a>
                   </form>
                </ul>
             </div>
@@ -60,11 +46,11 @@
                               		$no_surat	= empty($b->no_surat) ? "<span class='label label-danger'>Belum diberi nomor</span>" : $b->no_surat;
 									         $filenya	= empty($b->file) ? "<div class='label label-warning'>Tidak tersedia</div>" : "<a class='label label-success' href='".base_URL()."upload/surat_keluar/".$b->file."' target='_blank'><b>Download / Lihat</b></a>";
                               			
-                              		$no_agenda	= empty($b->no_agenda) ? "<span class='label label-danger'>Belum diberi nomor</span>" : $b->no_agenda;
-                              		
-                              		
+                              		$no_agenda	= empty($b->no_agenda) ? "<span class='label label-danger'>Belum diberi nomor</span>" : $b->no_agenda;                              		
+
                               		$stat_setuju	= $b->flag_setuju == "N" ? "<span class='label label-danger'>Belum diperiksa</span>" : "<span class='label label-success'>Sudah diperiksa dan setuju</span>";
-                              		$stat_keluar	= $b->flag_keluar == "N" ? "<span class='label label-danger'>Belum dikirim</span>" : "<span class='label label-success'>Sudah dikirim</span>";
+                              		
+                                    $stat_keluar	= $b->flag_keluar == "N" ? "<span class='label label-danger'>Belum dikirim</span>" : "<span class='label label-success'>Sudah dikirim</span>";
 									         $stat_revisi	= $b->flag_revisi == "Y" ? "- <span class='label label-danger'>Perlu Revisi</span>" : "";
 									         $stat_catatan	= !empty($b->catatan) ?  "- <a href='#catatan' data-toggle='modal' onclick='return load_catatan(" . $b->id . ");'><span class='label label-danger'>Lihat Catatan</span></a>" : "";
 									
@@ -72,128 +58,43 @@
                            <tr>
                               <td class="ctr"><?php echo tgl_jam_sql($b->tgl_surat);?></td>
                               <td>
-									<?=$no_surat."<br><b>Attachment : </b>".$filenya.""?><br>
-									
-									<?php if ($admin_level == "pimpinan" && $b->pemeriksa_user == $admin_id) { ?>
-									<b>Format Surat : </b><a class="label label-info" href="<?php echo base_url() . 'surat/konsep_edit/' . $b->id . '/konsep';?>"><b>Lihat / Edit</b></a>
-									<?php }else{ ?>
-									<b>Format Surat : </b><a class="label label-info" href="<?php echo base_url() . 'surat/lihat_surat/' . $b->id . '/konsep';?>"><b>Lihat</b></a>
-									<?php } ?>
-									<br>
-									 <?php if($admin_level !=='tata usaha'){ ?>
-									   <b>Catatan Revisi:</b> <a href="#daftar_revisi" data-toggle="modal" class="label label-success" title="Lihat Catatan Revisi Surat" onclick="return getRevisiData('<?php echo $b->id;?>');"><i class="fa fa-pencil-square-o"> </i> Lihat</a>
-									<?php } ?>
-							  </td>
+      									<?=$no_surat."<br><b>Attachment : </b>".$filenya.""?><br>
+      									
+      									<?php if ($admin_level == "pimpinan" && $b->pemeriksa_user == $admin_id) { ?>
+      									<b>Format Surat : </b><a class="label label-info" href="<?php echo base_url() . 'surat/konsep_edit/' . $b->id . '/konsep';?>"><b>Lihat / Edit</b></a>
+      									<?php }else{ ?>
+      									<b>Format Surat : </b><a class="label label-info" href="<?php echo base_url() . 'surat/lihat_surat/' . $b->id . '/konsep';?>"><b>Lihat</b></a>
+      									<?php } ?>
+      									<br>
+      									<b>Catatan Revisi:</b> <a href="#daftar_revisi" data-toggle="modal" class="label label-success" title="Lihat Catatan Revisi Surat" onclick="return getRevisiData('<?php echo $b->id;?>');"><i class="fa fa-pencil-square-o"> </i> Lihat</a>
+   									
+							         </td>
                               <td><?=$b->perihal."<br><b>Penerima : </b>".$b->penerima?></td>
                               <td>
-								 
-								 <?php
-									$paraf_list = $this->db->query("SELECT IF(paraf_list IS NULL OR paraf_list = '','NULL',paraf_list) as paraf_list FROM surat_keluar WHERE id = $b->id")->row()->paraf_list;
-									if($paraf_list === 'NULL'){
-									   
-									}else{
-									   $paraf_list = substr($paraf_list, 0, -1);
-									   
-									   $arr_paraf_list = explode(",",$paraf_list);
-									   
-									   $c = count($arr_paraf_list);
-									   $msg = null;
-									   
-									   for($i = 0;$i < $c;$i++){
-										  $jabatan = $this->db->query("SELECT jabatan FROM pengguna WHERE id = $arr_paraf_list[$i]")->row()->jabatan;
-										  $msg .=  "<span class='label label-success'>Paraf $jabatan</span><br>";										   
-									   }									   
-
-									   echo $msg;
-									}
-								 ?>
-								 <?php echo $stat_setuju." - ".$stat_keluar . $stat_revisi . $stat_catatan;?>
-								
-							  </td>
+                               <?php $stat_setuju = $b->flag_revisi == "N" ? $stat_setuju . " - " : ""; ?>  
+								       <?php echo $stat_setuju . $stat_keluar . $stat_revisi . $stat_catatan;?>								
+							         </td>
+                              <!-- ------------------------- AKSI -------------------------- -->
                               <td class="ctr">
                                  <a href="#detil_surat" role="button" data-toggle="modal" class="btn btn-success btn-sm" title="Detil Data" onclick="return load_data(<?php echo $b->id; ?>);"><i class="fa fa-th-list"> </i> Detail</a>
-                                 <?php 
-                                    //echo var_dump($this->session->userdata);
-                                    //echo $b->pemeriksa_user."-".$admin_id."-".$admin_level;
-								 
-								 if ($admin_id == $b->pemeriksa_user && $b->flag_setuju == "N" && $admin_level !== "pimpinan")
-								 { ?>
-									<?php
-									   $id_dekan = $this->db->query("SELECT id FROM pengguna WHERE jabatan LIKE '%Dekan FKIP%'")->row()->id;
-									   
-									   $r = $this->db->query("SELECT id FROM pengguna
-										 				      WHERE jabatan LIKE '%Wakil Dekan%'")->result();
-									   
-									   $arr_id_pimpinan  = array();
-									   
-									   foreach($r as $row){
-										  $arr_id_pimpinan[] = $row->id;  
-									   }
-									?>
-									
-								 <?php if(in_array($admin_id,$arr_id_pimpinan)){ ?>
-									<a href="#revisi" role="button" data-toggle="modal" class="btn btn-success btn-sm" title="Revisi Surat" onclick="setRevisiData('<?php echo $b->id;?>','<?php echo $b->pengirim_user;?>');return false"><i class="fa fa-pencil-square-o"> </i> Revisi</a>
-									<!--<a href="<?php echo base_url() . 'surat/konsep/paraf/' . $b->id . '/' . $id_dekan; ?>" role="button" class="btn btn-success btn-sm" title="Paraf Surat"><i class="fa fa-sign-out"> </i> Paraf</a>-->
-									<a href="#last-paraf" role="button" data-toggle="modal" class="btn btn-success btn-sm" title="Paraf Surat" onclick="setLastParaf('<?php echo $b->id;?>','<?php echo $id_dekan;?>')"><i class="fa fa-sign-out"> </i> Paraf</a>
-								 <?php }else if($admin_level !== "tata usaha"){ ?>								 
-									<a href="#revisi" role="button" data-toggle="modal" class="btn btn-success btn-sm" title="Revisi Surat" onclick="setRevisiData('<?php echo $b->id;?>','<?php echo $b->pengirim_user;?>');return false"><i class="fa fa-pencil-square-o"> </i> Revisi</a>
-									<a href="#paraf" role="button" data-toggle="modal" class="btn btn-success btn-sm" title="Paraf Surat" onclick="setParafData('<?php echo $b->id;?>');return false"><i class="fa fa-sign-out"> </i> Paraf</a>
-								 <?php }else{ ?>
-									<?php
-									   $paraf_list = $this->db->query("SELECT IF(paraf_list IS NULL OR paraf_list = '','NULL',paraf_list) as paraf_list
-																	   FROM surat_keluar
-																	   WHERE id = $b->id")->row()->paraf_list;
-									   
-									   $pemeriksa_user = "";
-									   if($paraf_list === 'NULL'){
-										  //jika NULL maka ambil dari revisi
-										  $pemeriksa_user = $this->db->query("SELECT id_pengguna
-																			  FROM surat_keluar_revisi
-																			  WHERE id_surat = $b->id
-																			  ORDER BY id ASC
-																			  LIMIT 1")->row()->id_pengguna;
-									   }else{
-										  //jika ngga maka ambil dari paraf pertama
-										  $paraf_list = substr($paraf_list, 0, -1);
-									   
-										  $arr_paraf_list = explode(",",$paraf_list);
-										  $pemeriksa_user = $arr_paraf_list[0];
-									   }
-									   
-									?>
-									<a href="<?=base_URL().$admin_apps?>/konsep/edit/<?=$b->id?>" class="btn btn-success btn-sm" title="Edit Data"><i class="fa fa-edit"> </i> Edt</a>
-									<a href="#daftar_revisi" role="button" data-toggle="modal" class="btn btn-success btn-sm" title="Lihat Catatan Revisi Surat" onclick="return getRevisiData('<?php echo $b->id;?>');"><i class="fa fa-pencil-square-o"> </i> Baca Revisi</a>
-									<a href="<?php echo base_URL().$admin_apps; ?>/konsep/" role="button" class="btn btn-success btn-sm" title="Lanjut" onclick="setAfterRevisi('<?php echo $b->id;?>','<?php echo $pemeriksa_user;?>');"><i class="fa fa-sign-out"> </i> Kirim</a>
-								 <?php } ?>
-									
-									
-								 <?php
-								 } else if ($this->session->userdata('admin_level') === 'tata usaha')
-								 { ?>						
-									
-									
-									<a href="#unit" role="button" onclick="return setData('<?php echo $b->id; ?>');" data-toggle="modal" class="btn btn-success btn-sm" title="Kirim Surat"><i class="fa fa-sign-out"> </i> Kirim Surat</a>
-									<?php 
-                                 } else if ($admin_level == "pimpinan" && $b->pemeriksa_user == $admin_id)
-								 {
-                                  	if ($b->flag_setuju == "N")
-									{
-									   ?>
-									   <a href="<?php echo base_URL().$admin_apps; ?>/konsep/setujui/<?php echo $b->id; ?>" class="btn btn-success btn-sm" title="Setujui Konsep"><i class="fa fa-check"> </i> Setujui </a>
-									   <?php
-                                    }
-                                    } else if ($admin_id == $b->pengirim_user && $b->flag_setuju == "N")
-									{
-									   ?>
-									   <a href="<?php echo base_URL().$admin_apps; ?>/konsep/edit/<?php echo $b->id; ?>" class="btn btn-success btn-sm" title="Edit Konsep Surat"><i class="fa fa-edit"> </i> Edit Surat</a>
-									   <?php
-									}
-                                    ?>
+                                 <?php if($admin_level === 'pimpinan'){ ?>
+                                    <?php if($b->flag_setuju === 'N'){ ?>
+                                       <?php if($b->flag_revisi === 'N'){ ?>
+                                       <a href="#revisi" role="button" data-toggle="modal" class="btn btn-success btn-sm" title="Revisi Surat" onclick="setRevisiData('<?php echo $b->id;?>','<?php echo $b->pengirim_user;?>');return false"><i class="fa fa-pencil-square-o"> </i> Revisi</a>   
+                                       <a href="<?php echo base_URL() . 'surat/konsep/setujui/' . $b->id?>" role="button" class="btn btn-success btn-sm" title="Setujui"><i class="fa fa-hand-o-right"> </i> Setujui</a>   
+                                       <?php } ?>
+                                    <?php } ?>                                    
+                                 <?php }else{ ?>
+                                    <a href="<?php echo base_URL().$admin_apps; ?>/konsep/edit/<?php echo $b->id; ?>" class="btn btn-success btn-sm" title="Edit Konsep Surat"><i class="fa fa-edit"> </i> Edit</a>   
+                                    <?php if($b->flag_setuju === 'Y' && $b->flag_keluar === 'N' && $b->flag_revisi === 'N'){ ?>
+                                    <a href="#unit" role="button" onclick="return setData('<?php echo $b->id; ?>');" data-toggle="modal" class="btn btn-success btn-sm" title="Kirim Surat"><i class="fa fa-sign-out"> </i> Kirim</a> 
+                                    <?php } ?>
+                                 <?php } ?> 
                               </td>
                            </tr>
-                           <?php 
-                              $no++;
-                              }
+                              <?php 
+                                 $no++;
+                                 }
                               }
                               ?>
                         </tbody>
@@ -439,9 +340,7 @@
    
    function getRevisiData(id_surat) {
 	  $.get("<?php echo base_URL(); ?>surat/konsep/get_revisi?id_surat="+id_surat,
-		 function(data,status){
-			//$("#detil_div").html('Loading...');
-			//$("#detil_div").html(data);
+		 function(data,status){			
 			$('#table_daftar_revisi').html(data);
 		 }
 	  );
@@ -463,9 +362,7 @@
    function setData(data1) {
 	  
 	  $.get("<?php echo base_URL(); ?>surat/get_nomor_surat/" + data1,
-		 function(data,status){
-		   //$("#detil_div").html('Loading...');
-		   //$("#detil_div").html(data);
+		 function(data,status){		   
 		   $("#no_surat").val(data);   
 	  });
 	  

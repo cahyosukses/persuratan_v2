@@ -371,7 +371,7 @@ class Surat extends CI_Controller {
 			INNER JOIN surat_masuk ON disposisi.id_surat = surat_masuk.id
 			WHERE disposisi.penerima = '".$a['admin_id_unit']."' AND disposisi.penerima_user = '".$a['admin_id']."' 
 			AND disposisi.flag_tolak = 'N'")->result();
-			//echo $this->db->last_query()." - - - ".$admin_level;
+			
 			$a['page']		= "surat/l_disposisi_masuk";
 		}
 		
@@ -462,6 +462,42 @@ class Surat extends CI_Controller {
 												INNER JOIN pengguna ON disposisi.penerima_user = pengguna.id 
 												WHERE disposisi.id_surat = '".$this->uri->segment(4)."'")->result();
 			$a['page']		= "surat/l_disposisi_keluar";
+
+		}else if($mau_ke === 'get_tanggapan'){
+			
+			$id_disposisi = $_GET['id_disposisi'];
+			$cr = $this->db->query("SELECT DATE(a.tgl_kirim) as tanggal,
+				                           c.nama,
+				                           a.catatan
+								    FROM disposisi_tanggapan a
+									LEFT JOIN disposisi b ON a.id_disposisi = b.id
+									LEFT JOIN pengguna c ON b.penerima_user = c.id
+									WHERE a.id_disposisi = $id_disposisi
+									ORDER BY a.tgl_kirim DESC");
+			
+			$str = "";
+			if ($cr->num_rows() > 0) { 
+				$str .= " <table class='table table-bordered table-hover'>
+							<tr>
+								<th width='20%'>Tanggal</th>
+								<th width='30%'>Didisposis Oleh</th>
+								<th>Isi Tanggapan</th>							
+							</tr>";
+				foreach($cr->result() as $row){
+					$str .="<tr>
+							<td>" . tgl_jam_sql($row->tanggal) . "</td>
+							<td>" . $row->nama ."</td>
+							<td>" . $row->catatan ."</td>
+						  </tr>";
+				}
+				
+				$str .= "</table>";
+			}else{
+				$str .= "<div class=\"alert alert-info\" id=\"alert\">Belum ada Tanggapan </div>";
+			}
+			echo $str;
+			exit(0);
+			
 		} else {
 			$a['data']		= $this->db->query("SELECT disposisi.*, pengguna.level AS level, pengguna.nama AS nama_user,
 												unit.nama_unit AS tujuan FROM disposisi 
@@ -546,8 +582,7 @@ class Surat extends CI_Controller {
 			INNER JOIN unit ON disposisi.dari = unit.kode_gabung 
 			INNER JOIN pengguna ON disposisi.dari_user = pengguna.id
 			WHERE disposisi.id = '$idu'")->row();
-			//echo $this->db->last_query();
-			//echo $this->db->last_query()." - - - ".$admin_level;
+			
 			$a['page']		= "surat/f_disposisi_tanggapan";
 		}
 		
@@ -641,6 +676,7 @@ class Surat extends CI_Controller {
 		$nomor_surat = $this->db->query(" SELECT CONCAT(LPAD(a.id,3,'0'),'/',
 												 IFNULL(c.kode,'_________'),'/',
 												 IFNULL(d.kode,'___'),'/',
+												 MONTH(a.tgl_surat),'/',
 												 YEAR(a.tgl_surat)) as nomor_surat 
 										  FROM surat_keluar a
 										  LEFT JOIN pengguna b ON a.pengirim_user = b.id
@@ -650,7 +686,158 @@ class Surat extends CI_Controller {
 		echo $nomor_surat;		
 	}
 	
+	function pelaporan(){
+
+		$this->load->model('basecrud_m');
+
+		$a['admin_id']			= $this->session->userdata('admin_id');
+		$a['admin_id_unit']		= $this->session->userdata('admin_id_unit');
+		$a['admin_user']		= $this->session->userdata('admin_user');
+		$a['admin_nama']		= $this->session->userdata('admin_nama');
+		$a['admin_ta']			= $this->session->userdata('admin_ta');
+		$a['admin_level']		= $this->session->userdata('admin_level');
+		$a['admin_apps']		= $this->session->userdata('admin_apps');
+		$a['admin_valid']		= $this->session->userdata('admin_valid');
+		$a['menu']				= $this->db->query("SELECT id_menu FROM pengguna WHERE id = ".$a['admin_id']."")->row();		
+		if ($a['admin_valid'] == FALSE || $a['admin_id'] == "") { redirect("dashboard/login"); } 		
+		cek_akses_menu(($a['menu']->id_menu), 8, "surat"); 	
+
+		$myid 					= $a['admin_id'];
+		$a['user']				= $this->db->query("SELECT * FROM pengguna WHERE status = 'Y'")->result();		
+		$total_row				= $this->db->query("SELECT * FROM disposisi_pelaporan 
+			                                        WHERE dari_user = $myid 
+			                                              OR penerima_user = $myid")->num_rows();
+		$per_page				= 10;
+		$awal					= $this->uri->segment(4); 
+		$awal					= (empty($awal) || $awal == 1) ? 0 : $awal;		
+		$akhir					= $per_page;
+		
+		$a['pagi']				= _page($total_row, $per_page, 4, base_url()."surat/pelaporan/p");
+		
+
+		$mau_ke					= $this->uri->segment(3);
+		$idu					= $this->uri->segment(4);
+			
+		$cari					= addslashes($this->input->post('q'));
+		$a['cari'] 				=  $cari;
+
+		//upload config 
+		$config['upload_path'] 		= './upload';
+		$config['allowed_types'] 	= 'gif|jpg|png|pdf|doc|docx';
+		$config['max_size']			= '8000';
+		$config['max_width']  		= '3000';
+		$config['max_height'] 		= '3000';
+		$this->load->library('upload', $config);
+
+		if( $mau_ke === "edit" ){
+
+			$a['datdet']	= $this->db->query("SELECT * FROM disposisi_pelaporan 
+				                                WHERE id = $idu")->row();
+			$a['page']		= "surat/f_pelaporan";
+
+		}elseif( $mau_ke === "act_edt" ){
+
+			cek_empty_post("surat/pelaporan");
+			
+			if ($this->upload->do_upload('file_pelaporan')) {
+				$up_data	 	= $this->upload->data();
+				$up  = array(
+								'tgl_kirim'     => $this->input->post('tgl_kirim'),
+								'dari_user'     => $myid,
+								'penerima'      => $this->input->post('penerima'),
+								'penerima_user' => $this->input->post('penerima_user'),
+								'perihal'       => $this->input->post('perihal'),
+								'catatan'       => $this->input->post('catatan'),
+								'file'          => $up_data['file_name']);
+
+				$this->basecrud_m->update('disposisi_pelaporan',$idu,$up);
+			} else {
+				$up  = array(
+								'tgl_kirim'     => $this->input->post('tgl_kirim'),
+								'dari_user'     => $myid,
+								'penerima'      => $this->input->post('penerima'),
+								'penerima_user' => $this->input->post('penerima_user'),
+								'perihal'       => $this->input->post('perihal'),
+								'catatan'       => $this->input->post('catatan'));
+				
+				$this->basecrud_m->update('disposisi_pelaporan',$idu,$up);
+			}	
+			
+			
+			$this->session->set_flashdata("k", "<div class=\"alert alert-success\" id=\"alert\">Data diupdate. ".$this->upload->display_errors()."</div>");
+			redirect('surat/pelaporan');
+
+		}elseif ($mau_ke === "add") {			
+			
+			$a['page']		= "surat/f_pelaporan";
+			
+		}elseif ($mau_ke == "act_add") {	
+			cek_empty_post("surat/pelaporan");
+			
+			if ($this->upload->do_upload('file_pelaporan')) {
+				$up_data	 	= $this->upload->data();
+				$in  = array(
+								'tgl_kirim'     => $this->input->post('tgl_kirim'),
+								'dari_user'     => $myid,
+								'penerima'      => $this->input->post('penerima'),
+								'penerima_user' => $this->input->post('penerima_user'),
+								'perihal'       => $this->input->post('perihal'),
+								'catatan'       => $this->input->post('catatan'),
+								'file'          => $up_data['file_name']);
+
+				$this->basecrud_m->insert('disposisi_pelaporan',$in);
+			} else {
+				$in  = array(
+								'tgl_kirim'     => $this->input->post('tgl_kirim'),
+								'dari_user'     => $myid,
+								'penerima'      => $this->input->post('penerima'),
+								'penerima_user' => $this->input->post('penerima_user'),
+								'perihal'       => $this->input->post('perihal'),
+								'catatan'       => $this->input->post('catatan'));
+				
+				$this->basecrud_m->insert('disposisi_pelaporan',$in);
+			}	
+			
+			
+			$this->session->set_flashdata("k", "<div class=\"alert alert-success\" id=\"alert\">Data ditambahkan. ".$this->upload->display_errors()."</div>");
+			redirect('surat/pelaporan');
+		
+		}elseif($mau_ke === "update_status"){
+
+			$id = empty($_GET['id']) ? NULL : $_GET['id'];
+			
+			$this->db->query("UPDATE disposisi_pelaporan 
+				              SET status_periksa = 'Y' 
+				              WHERE id = $id");
+			exit(0);
+
+		}else {
+			
+			$a['data'] = $this->db->query(" SELECT b.id as id_pengirim,
+												   b.nama as pengirim,
+											       c.id as id_penerima,
+											       c.nama as penerima,
+											       a.id,
+											       a.perihal,
+											       a.catatan,
+											       a.file,
+											       a.tgl_kirim,
+											       a.status_periksa
+											FROM disposisi_pelaporan a
+											LEFT JOIN pengguna b ON a.dari_user = b.id
+											LEFT JOIN pengguna c ON a.penerima_user = c.id
+				                            WHERE dari_user = $myid OR penerima_user = $myid
+				                            LIMIT $awal, $akhir")->result();		
+			$a['page']		= "surat/l_pelaporan";
+		}
+		
+		$this->load->view('aaa', $a);
+	}
+
 	public function konsep() {
+
+		$this->load->model('basecrud_m');
+
 		$a['admin_id']			= $this->session->userdata('admin_id');
 		$a['admin_id_unit']		= $this->session->userdata('admin_id_unit');
 		$a['admin_user']		= $this->session->userdata('admin_user');
@@ -664,19 +851,16 @@ class Surat extends CI_Controller {
 		cek_akses_menu(($a['menu']->id_menu), 7, "surat"); 	
 		
 		 	
-		$a['user']				= $this->db->query("SELECT * FROM pengguna WHERE status = 'Y'")->result();
-		//echo $this->db->last_query();
-		/* pagination */	
+		$a['user']				= $this->db->query("SELECT * FROM pengguna WHERE status = 'Y'")->result();		
 		$total_row				= $this->db->query("SELECT * FROM surat_keluar")->num_rows();
 		$per_page				= 10;
 		$awal					= $this->uri->segment(4); 
-		$awal					= (empty($awal) || $awal == 1) ? 0 : $awal;
-		//if (empty($awal) || $awal == 1) { $awal = 0; } { $awal = $awal; }
+		$awal					= (empty($awal) || $awal == 1) ? 0 : $awal;		
 		$akhir					= $per_page;
 		
 		$a['pagi']				= _page($total_row, $per_page, 4, base_url()."surat/surat_masuk/p");
 		
-		//ambil variabel URL
+
 		$mau_ke					= $this->uri->segment(3);
 		$idu					= $this->uri->segment(4);
 			
@@ -721,10 +905,12 @@ class Surat extends CI_Controller {
 			redirect('surat/konsep');
 			
 		} else if ($mau_ke == "add") {
+			
 			$a['r_kode_hal_org'] = $this->db->query("SELECT * FROM kode_hal_org");
 			$a['page']		= "surat/f_surat_keluar";
 			
 		} else if ($mau_ke == "edit") {
+			
 			$a['r_kode_hal_org'] = $this->db->query("SELECT * FROM kode_hal_org");
 			$a['datdet']	= $this->db->query("SELECT * FROM surat_keluar WHERE id = '$idu'")->row();
 			$id_user = 	$this->session->userdata('admin_id');
@@ -737,6 +923,16 @@ class Surat extends CI_Controller {
 			
 		} else if ($mau_ke == "detil") {
 			
+			
+			$id = $_GET['id'];
+
+			$p = $this->db->query("SELECT a.nama 
+				                   FROM pengguna a 
+				                   LEFT JOIN surat_keluar_revisi b ON a.id = b.id_pengguna
+					               WHERE b.id_surat = $id 
+					               ORDER BY b.tanggal DESC 
+					               LIMIT 1")->row();	
+
 			$data			= $this->db->query("SELECT *, unit.nama_unit AS unit_pengirim, pengguna.nama AS pemeriksa_u,
 												(SELECT pengguna.nama FROM pengguna WHERE id = surat_keluar.pengirim_user) AS pembuat
 												FROM surat_keluar
@@ -744,6 +940,7 @@ class Surat extends CI_Controller {
 												INNER JOIN pengguna ON pengguna.id = surat_keluar.pemeriksa_user 
 												WHERE surat_keluar.id = '".$_GET['id']."'")->row();
 			if (!empty($data)) { 
+				$pemeriksa = $data->flag_revisi === 'Y' ? $p->nama : $data->pemeriksa_u;
 				echo "<table class='table-form' width='100%'>
 						<tr><td width='30%'>Unit Pengirim</td><td width='5%'>:</td><td width='65%'>".$data->unit_pengirim."</td></tr>
 						<tr><td>Dibuat oleh</td><td>:</td><td>".$data->pembuat."</td></tr>
@@ -753,15 +950,19 @@ class Surat extends CI_Controller {
 						<tr><td>Penerima</td><td>:</td><td>".$data->penerima."</td></tr>
 						<tr><td>Perihal</td><td>:</td><td>".$data->perihal."</td></tr>
 						<tr><td>Kecepatan</td><td>:</td><td>".$data->kecepatan."</td></tr>
-						<tr><td>Diperiksa oleh</td><td>:</td><td>".$data->pemeriksa_u."</td></tr>
+						<tr><td>Diperiksa oleh</td><td>:</td><td>". $pemeriksa ."</td></tr>
 					  </table>";
-			}			
+			}	
+
 			exit;
+
 		} else if ($mau_ke == "act_add") {	
+			
 			cek_empty_post("apps/konsep");
 			if ($this->upload->do_upload('file_surat')) {
 				$up_data	 	= $this->upload->data();
 				
+
 				$this->db->query("INSERT INTO surat_keluar(pengirim,
 														  pengirim_user,
 														  tgl_surat,
@@ -832,32 +1033,19 @@ class Surat extends CI_Controller {
 										  '$id_kode_hal_org')");
 			}	
 			
-			//echo $isi_surat;
-			//exit(0);
+			
 			
 			$this->session->set_flashdata("k", "<div class=\"alert alert-success\" id=\"alert\">Data ditambahkan dan menunggu persetujuan pemeriksa. ".$this->upload->display_errors()."</div>");
 			redirect('surat/konsep');
+
 		}  else if ($mau_ke == "act_edt") {	
 			
 			cek_empty_post("surat/konsep");
-			$status_revisi =$this->session->userdata('IS_REVISI');
 			
 			if ($this->upload->do_upload('file_surat')) {
 				$up_data	 	= $this->upload->data();
-				
-				if($status_revisi === 'TRUE'){
-					$this->db->query("UPDATE surat_keluar
-								 SET tgl_surat = '$tgl_surat',
-									 penerima = '$penerima',
-									 perihal = '$perihal',
-									 kecepatan = '$kecepatan',									 
-									 file = '".$up_data['file_name']."',
-									 id_jenis_surat = '$jenis_syurat',
-									 isi_surat = '$isi_surat',
-									 id_kode_hal_org = '$id_kode_hal_org'									 
-									 WHERE id = '$idp'");
-				}else{
-					$this->db->query("UPDATE surat_keluar
+
+				$this->db->query("UPDATE surat_keluar
 								 SET tgl_surat = '$tgl_surat',
 									 penerima = '$penerima',
 									 perihal = '$perihal',
@@ -865,48 +1053,34 @@ class Surat extends CI_Controller {
 									 pemeriksa = '$pemeriksa',
 									 pemeriksa_user = '$user',
 									 file = '".$up_data['file_name']."',
+									 flag_revisi = 'N',
 									 id_jenis_surat = '$jenis_syurat',
 									 isi_surat = '$isi_surat',
 									 id_kode_hal_org = '$id_kode_hal_org'									 
 									 WHERE id = '$idp'");	
-				}
-				
-				
-			} else {
-				if($status_revisi === 'TRUE'){
-					$this->db->query("UPDATE surat_keluar
-									  SET tgl_surat = '$tgl_surat',
-										  penerima = '$penerima',
-										  perihal = '$perihal',
-										  kecepatan = '$kecepatan',										  
-										  id_jenis_surat = '$jenis_syurat',
-										  isi_surat = '$isi_surat',
-										  id_kode_hal_org = '$id_kode_hal_org'									 
-									  WHERE id = '$idp'");	
-				}else{
-					$this->db->query("UPDATE surat_keluar
+
+			}else{
+				$this->db->query("UPDATE surat_keluar
 									  SET tgl_surat = '$tgl_surat',
 										  penerima = '$penerima',
 										  perihal = '$perihal',
 										  kecepatan = '$kecepatan',
 										  pemeriksa = '$pemeriksa',
 										  pemeriksa_user = '$user',
+										  flag_revisi = 'N',
 										  id_jenis_surat = '$jenis_syurat',
 										  isi_surat = '$isi_surat',
 										  id_kode_hal_org = '$id_kode_hal_org'									 
 									  WHERE id = '$idp'");	
-				}
-				
 			}	
 			
+			
 			$this->session->set_flashdata("k", "<div class=\"alert alert-success\" id=\"alert\">Data diupdate. ".$this->upload->display_errors()."</div>");
-			/*redirect('surat/konsep');*/
-			redirect('surat/surat_keluar');
+			redirect('surat/konsep');
 			
 		} else if ($mau_ke == "setujui") {
 			
-			$this->db->query("UPDATE surat_keluar SET flag_setuju = 'Y' WHERE id = '$idu'");
-			
+			$this->db->query("UPDATE surat_keluar SET flag_setuju = 'Y' WHERE id = '$idu'");			
 			$this->session->set_flashdata("k", "<div class=\"alert alert-success\" id=\"alert\">Surat telah disetujui </div>");			
 			redirect('surat/konsep');
 			
@@ -932,13 +1106,7 @@ class Surat extends CI_Controller {
 			$a['page']		= "surat/l_konsep";
 			
 		} elseif($mau_ke == "paraf"){
-			//http://localhost/persuratan/surat/konsep/paraf/idu/id_paraf
-			//$mau_ke					= $this->uri->segment(3);
-			
-			//operator -> Kabag Tata Usaha FKIP Universitas Jambi -> wakil dekan 1 ->wakil dekan 2 ->wakil dekan 3 -> dekan ->operator
-			
-			//$idu					= $this->uri->segment(4);
-			
+			/*			
 			$id_surat = "";
 			$id_paraf = "";
 			$catatan = "";
@@ -947,16 +1115,7 @@ class Surat extends CI_Controller {
 			$id_paraf				= 	$this->input->post('pemeriksa_user'); //next user
 			$catatan				= 	$this->input->post('catatan');
 			
-			/*	
-			if(!empty($_POST)){
-				
-				
-			}else{
-				$id_surat					= $this->uri->segment(4);
-				$id_paraf					= $this->uri->segment(5);
-			}
-			*/
-			
+						
 			$id_user 				= 	$this->session->userdata('admin_id');
 			
 			//update pemeriksa_user			
@@ -974,19 +1133,14 @@ class Surat extends CI_Controller {
 			
 			$this->session->set_flashdata("k", "<div class=\"alert alert-success\" id=\"alert\">Surat telah diparaf </div>");			
 			redirect('surat/konsep');
-			
+			*/
 		}else if($mau_ke === 'revisi'){
 			
-			$revisi = $this->input->post('revisi');
-			$id_surat = $this->input->post('id_surat');
+			$revisi        = $this->input->post('revisi');
+			$id_surat      = $this->input->post('id_surat');
 			$pengirim_user = $this->input->post('pengirim_user');
-			$id_user = 	$this->session->userdata('admin_id');
+			$id_user       = $this->session->userdata('admin_id');
 			
-			/*
-				'pemeriksa_user'=>$pengirim_user,
-				'catatan_revisi'=>$catatan_revisi,
-				'pemeriksa_revisi' => $id_user
-			*/
 			//update pemeriksa_user			
 			$this->db->where('id',$id_surat);
 			$this->db->update('surat_keluar',array(												   
@@ -1006,13 +1160,14 @@ class Surat extends CI_Controller {
 			redirect('surat/konsep');
 			
 		}else if($mau_ke === 'get_revisi'){
+			
 			$id_surat = $_GET['id_surat'];
 			$cr = $this->db->query("SELECT DATE(a.tanggal) as tanggal,b.nama,a.isi_revisi
 								    FROM surat_keluar_revisi a
 									LEFT JOIN pengguna b ON a.id_pengguna = b.id
 									WHERE a.id_surat = $id_surat
 									ORDER BY a.tanggal DESC");
-			//echo $cr->catatan_revisi;
+			
 			$str = "";
 			if ($cr->num_rows() > 0) { 
 				$str .= " <table class='table table-bordered table-hover'>
@@ -1037,13 +1192,10 @@ class Surat extends CI_Controller {
 			exit(0);
 			
 		}else if($mau_ke === 'udah_revisi'){
+			
 			$id_surat = $_GET['id_surat'];			
-			$pemeriksa_user = $_GET['pemeriksa_user'];
-			
-			//update paraflist null
-			//update pemeriksa_user
-			
-			//update pemeriksa_user			
+			$pemeriksa_user = $_GET['pemeriksa_user'];			
+					
 			$this->db->where('id',$id_surat);
 			$this->db->update('surat_keluar',array(												   
 												   'flag_revisi'=>'N',
@@ -1052,53 +1204,33 @@ class Surat extends CI_Controller {
 												   )
 							  );
 			
-			//redirect('surat/konsep');
+			
 		}else if($mau_ke === 'get_catatan'){
+			
 			$id = $_GET['id'];
-			$catatan = $this->db->query("SELECT catatan FROM surat_keluar WHERE id = $id")->row()->catatan;
+			$catatan = $this->db->query("SELECT catatan 
+				                         FROM surat_keluar 
+				                         WHERE id = $id")->row()->catatan;
 			echo $catatan;
 			exit(0);
+
 		}else {
-			/*
-				NOTE : 
-			*/
-			if ($a['admin_level'] == "tata usaha") {
+			
+			if ($a['admin_level'] === "tata usaha") {
 			
 				$a['data']		= $this->db->query("SELECT surat_keluar.*
 												    FROM surat_keluar 
 													WHERE IF(flag_revisi = 'Y',flag_setuju = 'N',flag_setuju = 'Y') AND flag_keluar = 'N' 
 													LIMIT $awal, $akhir ")->result();
 				
-			} else if ($a['admin_level'] == "staff") {
+			} else if ($a['admin_level'] === "staff") {
 				
-				/*$idu					= $this->uri->segment(4);
-				$id_paraf				= $this->uri->segment(5); //next user
-				$id_user = $this->session->userdata('admin_id');
-				*/
-			
 				$a['data']		= $this->db->query("SELECT surat_keluar.* FROM surat_keluar 
 													WHERE (flag_keluar = 'N' OR flag_keluar = 'Y') AND pemeriksa = '".$a['admin_id_unit']."'
 													AND pemeriksa_user = '".$a['admin_id']."'
-													LIMIT $awal, $akhir ")->result();				
+													LIMIT $awal, $akhir ")->result();						
 				
-				
-				
-				
-				
-			
-				
-			} else {													
-				//pimpinan
-				/*
-					13 nov 2014
-					:hanya pimpinan yang surat_keluar.pemeriksa_user yang boleh baca
-				*/
-				
-				/*$a['data']		= $this->db->query("SELECT surat_keluar.* FROM surat_keluar 
-													WHERE (flag_setuju = 'N' OR flag_keluar = 'N') AND
-													(pemeriksa = '".$a['admin_id_unit']."' OR pemeriksa_user = '".$a['admin_id']."')
-													LIMIT $awal, $akhir")->result();
-				*/									
+			} else {					
 				
 				$a['data']		= $this->db->query("SELECT surat_keluar.* FROM surat_keluar 
 													WHERE (flag_setuju = 'N' OR flag_keluar = 'N') AND
@@ -1119,7 +1251,8 @@ class Surat extends CI_Controller {
 	
 	function show_pdf($id){
 		$data = array();
-		$data['rs_surat'] = $this->db->query(	"SELECT a.no_surat,b.nama,b.nomor_induk,IF(b.kehadiran_status = 'hadir','blank.jpg',b.ttd_image) as ttd,a.isi_surat ".
+		$data['rs_surat'] = $this->db->query(	
+											"SELECT a.no_surat,b.nama,b.nomor_induk,IF(b.kehadiran_status = 'hadir','blank.jpg',b.ttd_image) as ttd,a.isi_surat ".
 											"FROM surat_keluar a ".
 											"LEFT JOIN pengguna b ".
 											"ON a.pemeriksa_user = b.id ".

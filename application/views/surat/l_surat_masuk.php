@@ -96,7 +96,7 @@
 												if ($this->session->userdata('admin_level') == "pimpinan" && $b->flag_lanjut == "N") {
 												?>
 												
-												<a href="<?=base_URL().$admin_apps?>/disposisi_keluar/add/<?=$b->id?>/surat" class="btn btn-info btn-sm" title="Disposisi"><i class="fa fa-hand-o-right" onclick="return update_read(<?php echo $b->id; ?>);">  </i> Disposisi</a>
+												<a href="<?=base_URL() .$admin_apps?>/disposisi_keluar/add/<?=$b->id?>/surat" class="btn btn-info btn-sm" title="Disposisi"><i class="fa fa-hand-o-right" onclick="return update_read(<?php echo $b->id; ?>);">  </i> Disposisi</a>
 												
 												<?php } else if ($this->session->userdata('admin_level') == "pimpinan" && $b->flag_lanjut == "Y") { ?>
 												<a href="<?=base_URL().$admin_apps?>/disposisi_keluar/detil/<?php echo $b->id; ?>" class="btn btn-info btn-sm" title="Sudah Disposisi"><i class="fa fa-hand-o-right">  </i> Sudah Disposisi</a>

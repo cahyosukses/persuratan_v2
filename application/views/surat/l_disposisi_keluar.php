@@ -47,14 +47,22 @@
 						$dibaca_flag	= $b->flag_read == "Y" ? "<div class='label label-success'>Yes</div>" : "<div class='label label-warning'>No</div>";
 						$ditolak_flag	= $b->flag_tolak == "Y" ? "<div class='label label-danger' title='".$b->alasan."'>Yes</div>" : "<label class='label label-success'>No</label>";
 						$lanjut_flag	= $b->flag_lanjut == "Y" ? "<div class='label label-success'>Sudah</div>" : "<label class='label label-warning'>Belum</label>";
-						
+						$tanggapan = $this->db->query("SELECT * FROM disposisi_tanggapan WHERE id_disposisi = $b->id");
 					?>
 					<tr>
 						<td><?php echo $b->nama_user." (".$b->level.")<br>".$b->tujuan;?></td>
 						<td><?php echo $b->intruksi."<br>".$b->kecepatan;?></td>
 						<td class="ctr"><?php echo tgl_jam_sql($b->tgl_end);?></td>
 						<td><?php echo $b->isi_disposisi;?></td>
-						<td><?php echo "Dibaca : ".$dibaca_flag."<br>Ditolak : ".$ditolak_flag."<br>Ditindaklanjuti : ".$lanjut_flag;?></td>
+						<td>
+
+							<?php 
+								echo "Dibaca : " . $dibaca_flag . 
+								"<br>Ditolak : ".$ditolak_flag . 
+								"<br>Ditindaklanjuti : ".$lanjut_flag; 
+								echo $tanggapan->num_rows() == 0 ? "<br>Isi Tanggapan : <label class='label label-warning'>Belum</label>" : "<br>Isi Tanggapan : <label class='label label-success'><a href='#tanggapan_disposisi' data-toggle='modal' onclick=\"getTanggapanDisposisiData($b->id)\">Baca</a></label>";
+							?>
+						</td>
 						
 						<td class="ctr">
 							<div class="btn-group">
@@ -124,10 +132,37 @@
 	</div>
 </div>
 
+<!-- MODAL TANGGAPAN DISPOSISI -->
+<div class="modal col-lg-12 fade" id="tanggapan_disposisi" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+   <div class="modal-dialog">
+      <div class="modal-content">
+         
+            <div class="modal-header">
+               <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+               <h4 class="modal-title" id="myModalLabel">Isi Tanggapan Disposisi</h4>
+            </div>
+            <div class="modal-body">
+               <div id="table_tanggapan_disposisi"></div>
+            </div>
+            <div class="modal-footer">			   
+               <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+
+      </div>
+   </div>
+</div>
 
 <script type="text/javascript">
-function setData(data1, data2) {
-	$("#data1").html(data1);
-	$("#data2").prop('href', data2);
-}
+	function setData(data1, data2) {
+		$("#data1").html(data1);
+		$("#data2").prop('href', data2);
+	}
+
+	function getTanggapanDisposisiData(id_disposisi) {
+	  $.get("<?php echo base_URL(); ?>surat/disposisi_keluar/get_tanggapan?id_disposisi="+id_disposisi,
+		 function(data,status){			
+			$('#table_tanggapan_disposisi').html(data);
+		 }
+	  );
+   }
 </script>

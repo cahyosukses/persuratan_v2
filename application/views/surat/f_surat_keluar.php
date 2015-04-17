@@ -7,7 +7,18 @@
    }
    $mode			= $this->uri->segment(3);
    
+   $p = null;
+   
+
    if ($mode == "edit" || $mode == "act_edt") {
+      
+      if($datdet->flag_revisi === 'Y'){
+         $p = $this->db->query("SELECT id_pengguna FROM surat_keluar_revisi 
+                                 WHERE id_surat = $datdet->id
+                                 ORDER BY tanggal DESC 
+                                 LIMIT 1")->row(); 
+      }
+
       $act                = 	"act_edt";
       $idp                = 	$datdet->id;
       $id_rel_surat_masuk =	$datdet->id_rel_surat_masuk;
@@ -20,8 +31,10 @@
       $penerima           =	$datdet->penerima;
       $perihal            =	$datdet->perihal;
       $kecepatan          =	$datdet->kecepatan;
+      
       $pemeriksa          =	$datdet->pemeriksa;
-      $pemeriksa_user     =	$datdet->pemeriksa_user;
+      
+      $pemeriksa_user     =	$datdet->flag_revisi === 'N' ?  $datdet->pemeriksa_user : $p->id_pengguna;
       $flag_setuju        =	$datdet->flag_setuju;
       $flag_keluar        =	$datdet->flag_keluar;
       $flag_del           =	$datdet->flag_del;
@@ -52,7 +65,10 @@
       $jenis_ok           =	"";
       $id_kode_hal_org    =   "";
    }
+   
+
    ?>
+
 <div class="row" style="margin-top: 20px">
    <div class="col-lg-12">
       <!-- /.panel -->
@@ -100,24 +116,6 @@
                            <td width="30%">Pemeriksa</td>
                            <td>
                               <select name="pemeriksa" id="pemeriksa" class="form-control col-lg-6" tabindex="5" ><?php echo select_unit(); ?></select> 
-                              <!--
-                              <div class="col-lg-2" style="margin-top: 10px">User</div>
-                              <select name="user" id="user" class="form-control col-lg-4" tabindex="6">
-                              <?php 
-                                 if (!empty($user)) {
-                                 	foreach ($user as $u) {
-                                 		//echo "<option value='".$u->id."'>".$u->username."</option>";
-                                 		
-                                 		if ($u->id != $this->session->userdata('admin_id')) {
-                                 			echo "<option value='".$u->id."' class='".$u->id_unit."'>".$u->jabatan." (".$u->username.")</option>";
-                                 		} else {
-                                 			echo "<option value='".$u->id."' class='".$u->id_unit."'>Saya (".$u->level.")</option>";
-                                 		}
-                                 	}
-                                 } 
-                                 ?>
-                              </select>
-                              -->
                            </td>
                         </tr>
                         
@@ -128,8 +126,7 @@
                               <?php 
                                  if (!empty($user)) {
                                     foreach ($user as $u) {
-                                       //echo "<option value='".$u->id."'>".$u->username."</option>";
-                                       
+                                      
                                        if ($u->id != $this->session->userdata('admin_id')) {
                                           echo "<option value='".$u->id."' class='".$u->id_unit."'>".$u->jabatan." (".$u->username.")</option>";
                                        } else {

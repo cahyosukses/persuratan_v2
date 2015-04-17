@@ -62,7 +62,7 @@ if ($mode == "edt" || $mode == "act_edt") {
 				<div class="col-lg-6">	
 					<table  class="table-form">
 					<tr><td width="30%">Penerima</td><td><select name="penerima" class="form-control col-lg-12" required tabindex="5"><?php echo select_unit_val($penerima); ?></select></td></tr>	
-					<!--<tr><td>Tembusan</td><td><select name="tembusan" class="form-control col-lg-12" required tabindex="6"><?php echo select_unit(); ?></select></td></tr>-->
+					
 					<tr><td>Perihal surat</td><td><input type="text" name="perihal" required value="<?php echo $perihal; ?>" id="perihal" class="form-control col-lg-12" tabindex="7"></td></tr>	
 					<tr><td>File Berkas (Scan)</td><td>
 					<input type="file" name="file_surat" class="form-control col-lg-4" tabindex="8">

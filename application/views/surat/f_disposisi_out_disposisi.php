@@ -51,15 +51,15 @@ if ($mode == "edt" || $mode == "act_edt") {
 			<!-- /.panel-heading -->
 			<div class="panel-body">
 				<div class="col-lg-12">
-				<div class="col-lg-3" style="height: 350px; overflow: auto">
-					<div class="alert alert-info"><b>Riwayat Surat</b></div>
+				<div class="col-lg-12" style="height: 450px; overflow: auto">
+					<div class="alert alert-info" style="margin-bottom:2px"><b>Riwayat Surat</b></div>
 					<table  class="table table-bordered">
 						<thead>
 							<tr>
 								<th width="25%">Tgl. Surat, Tgl Diterima</th>
 								<th width="25%">Pengirim, No. Surat</th>
 								<th width="25%">Perihal, File</th>
-								<th width="25%">No. Agd, Kecepatan</th>
+								<th width="25%">No. Agenda, Kecepatan</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -75,13 +75,13 @@ if ($mode == "edt" || $mode == "act_edt") {
 							</tr>
 						</tbody>
 					</table>
-					<div class="alert alert-info"><b>Riwayat Disposisi</b></div>
+					<div class="alert alert-info" style="margin-bottom:2px"><b>Riwayat Disposisi</b></div>
 					<table  class="table table-bordered">
 						<thead>
 							<tr>
 								<th width="5%">No</th>
-								<th width="20%">Pemberi Disp</th>
-								<th width="25%">Penerima Disp</th>
+								<th width="20%">Pemberi Disposisi</th>
+								<th width="25%">Penerima Disposisi</th>
 								<th width="25%">Intruksi</th>
 								<th width="25%">Kecepatan</th>
 							</tr>
@@ -118,7 +118,7 @@ if ($mode == "edt" || $mode == "act_edt") {
 				<input type="hidden" name="id_surat" value="<?php echo $detil_surat->id; ?>">
 				<input type="hidden" name="asal" value="<?php echo $asal; ?>">
 				
-				<div class="col-lg-9">	
+				<div class="col-lg-12">	
 					<div class="alert alert-info"><b>Data Disposisi <?php echo $admin_id_unit; ?></b></div>
 					<table  class="table-form">
 					<tr>

@@ -3,11 +3,13 @@
     <meta http-equiv="Content-type" content="text/html; charset=UTF-8">    
 	<link rel="stylesheet" href="<?php echo base_URL() . 'aset/'?>new_login/style.css" type="text/css">		
     <link rel="shortcut icon" href="<?php echo base_URL() . 'aset/'?>new_login/favicon.ico" type="image/x-icon">    
-    <script src="<?php echo base_URL() . 'aset/'?>new_login/jquery-1.js" type="text/javascript"></script> 
     <link rel="stylesheet" href="<?php echo base_URL() . 'aset/'?>new_login/validationEngine.css" type="text/css">
+
+    <script src="<?php echo base_URL() . 'aset/'?>new_login/jquery-1.js" type="text/javascript"></script>     
     <script src="<?php echo base_URL() . 'aset/'?>new_login/jquery.js" type="text/javascript"></script>
-    <script src="<?php echo base_URL() . 'aset/'?>new_login/jquery_002.js" type="text/javascript"></script>
+    <script src="<?php echo base_URL() . 'aset/'?>new_login/jquery_002.js" type="text/javascript"></script>        
     <script src="<?php echo base_URL() . 'aset/'?>new_login/main.js" type="text/javascript"></script>
+    
     <title>Aplikasi Perkantoran Elektronik (E-Office)</title>
 
 <body style="background-color:#d6e3ef">

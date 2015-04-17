@@ -227,6 +227,7 @@ $q_instansi	= $this->db->query("SELECT * FROM instansi LIMIT 1")->row();
 		$admin_id = $this->session->userdata('admin_id');
 		$admin_id_unit	= $this->session->userdata('admin_id_unit');
 		
+
 		if ($level === "tata usaha") {
 				
 				$a		= $this->db->query("SELECT COUNT(surat_keluar.id) as jml_konsep
@@ -302,6 +303,34 @@ $q_instansi	= $this->db->query("SELECT * FROM instansi LIMIT 1")->row();
 			$jml_surat_keluar = $a->row()->jml_surat_keluar;
 		?>
 		
+		<?php 
+			/*COUNT DISPOSISI MASUK*/
+			$admin_id_unit	= $this->session->userdata('admin_id_unit');
+			$admin_id = $this->session->userdata('admin_id');
+
+			$a = $this->db->query("
+			SELECT disposisi.*, pengguna.level AS level, pengguna.nama AS nama_user, unit.nama_unit AS tujuan, surat_masuk.pengirim AS pengirim, surat_masuk.perihal AS perihal_surat, surat_masuk.file AS file_surat
+			FROM disposisi 
+			INNER JOIN unit ON disposisi.penerima = unit.kode_gabung 
+			INNER JOIN pengguna ON disposisi.dari_user = pengguna.id 
+			INNER JOIN surat_masuk ON disposisi.id_surat = surat_masuk.id
+			WHERE disposisi.penerima = '".$admin_id_unit."' AND disposisi.penerima_user = '".$admin_id."' 
+			AND disposisi.flag_tolak = 'N' AND disposisi.flag_read = 'N' AND disposisi.flag_lanjut = 'N'");
+
+			$jml_disposisi_masuk = $a->num_rows();
+		?>
+
+		<?php 
+			/*COUNT PELAPORAN*/
+
+			$admin_id_unit	= $this->session->userdata('admin_id_unit');
+			$admin_id = $this->session->userdata('admin_id');
+
+			$a = $this->db->query("SELECT COUNT(*) as jml FROM disposisi_pelaporan
+								   WHERE penerima_user = $admin_id AND status_periksa = 'N'")->row();
+
+			$jml_pelaporan = $a->jml;
+		?>
 		
         <nav class="navbar navbar-default navbar-static-top  sidebar-collapse" role="navigation" style="margin-bottom: 0; z-index: initial">
             <div class="navbar-header">
@@ -338,7 +367,11 @@ $q_instansi	= $this->db->query("SELECT * FROM instansi LIMIT 1")->row();
 						$ico	= gval("menu", "id", "icon", $pc_jumlah_menu[$i]);
 						$nama	= gval("menu", "id", "nama", $pc_jumlah_menu[$i]);
 						//HACK-----------------
-						if($nama === 'S. Masuk'){
+						if($nama === 'Pelaporan'){
+							echo '<li><a href="'.base_URL().$admin_apps.'/'.$url.'" title="(i) Klik disini untuk melihat data '.$nama.'"><i class="fa fa-'.$ico.'"> </i> '.$nama.' { ' . $jml_pelaporan . ' }</a></li>';
+						}elseif($nama === 'Disp. Masuk'){
+							echo '<li><a href="'.base_URL().$admin_apps.'/'.$url.'" title="(i) Klik disini untuk melihat data '.$nama.'"><i class="fa fa-'.$ico.'"> </i> '.$nama.' { ' . $jml_disposisi_masuk . ' }</a></li>';
+						}elseif($nama === 'S. Masuk'){
 							
 							echo '<li><a href="'.base_URL().$admin_apps.'/'.$url.'" title="(i) Klik disini untuk melihat data '.$nama.'"><i class="fa fa-'.$ico.'"> </i> '.$nama.' { '. $jml_surat_belum_baca . ' / ' . $total_surat . ' }</a></li>';
 							

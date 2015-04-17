@@ -225,6 +225,7 @@ class Dashboard extends CI_Controller {
         $this->session->set_userdata('capedeh', $cap['word']);
 		*/
 		
+		$this->session->unset_userdata('allow_download');
  		$this->load->view('dashboard/new_login');
 	}
 	
@@ -272,13 +273,6 @@ class Dashboard extends CI_Controller {
 		$data = array();
 		if(!empty($_POST)){
 
-		/*
-		
-			
-
-
-		 */		
-		
 			$this->form_validation->set_rules('nosurat','Nomor Surat','xss_clean|required');
 			$this->form_validation->set_rules('jenis','Jenis Surat','xss_clean|required');
 			
@@ -322,6 +316,59 @@ class Dashboard extends CI_Controller {
 		$this->load->view('dashboard/jejak_surat',$data);
 	}
 	
+	function auth_download(){
+		$u 			= $this->security->xss_clean($this->input->post('u'));
+		$p 			= md5($this->security->xss_clean($this->input->post('p')));
+        		
+		$q_cek		= $this->db->query("SELECT * FROM pengguna WHERE username = '".$u."' AND password = '".$p."' AND status = 'Y'");
+		$j_cek		= $q_cek->num_rows();
+		$d_cek		= $q_cek->row();
+		if($j_cek == 1 ) {
+			$this->session->set_userdata('allow_download',true);
+			$jenis         = $this->security->xss_clean($this->input->post('jenis'));
+			$is_attachment = $this->security->xss_clean($this->input->post('is_attachment'));
+			$id            = $this->security->xss_clean($this->input->post('id'));
+
+			if($jenis === 'surat_keluar'){
+				if($is_attachment === 'Y'){
+
+					$this->load->model('basecrud_m');
+
+					$fl = $this->basecrud_m->get_where('surat_keluar',array('id' => $id))->row();
+
+					$this->load->helper('download');					
+					$data = file_get_contents( "./upload/surat_keluar/" . $fl->file ); // Read the file's contents
+					
+					force_download($fl->file, $data);
+				}else{
+					$this->pdf_report($id);
+				}
+
+			}else{
+				if($is_attachment === 'Y'){
+					$this->load->model('basecrud_m');
+
+					$fl = $this->basecrud_m->get_where('surat_masuk',array('id' => $id))->row();
+
+					$this->load->helper('download');					
+					$data = file_get_contents( "./upload/surat_masuk/" . $fl->file ); // Read the file's contents
+					
+					force_download($fl->file, $data);	
+				}else{
+					//do nothing
+
+				}
+			}
+
+		}else{
+			
+		}
+
+		redirect('dashboard/jejak_surat','reload');
+		
+		
+	}
+
 	public function do_login() {
 		$u 			= $this->security->xss_clean($this->input->post('u'));
 		$p 			= md5($this->security->xss_clean($this->input->post('p')));
@@ -333,14 +380,14 @@ class Dashboard extends CI_Controller {
 		
         if($j_cek == 1 ) {
             $data = array(
-                    'admin_id' 		=> $d_cek->id,
-                    'admin_id_unit'	=> $d_cek->id_unit,
-                    'admin_user' 	=> $d_cek->username,
-                    'admin_nama' 	=> $d_cek->nama,
-                    'admin_ta' 		=> $ta,
-                    'admin_level'	=> $d_cek->level,
-                    'admin_apps'	=> $d_cek->apps,
-                    'admin_valid' 	=> true
+					'admin_id'       => $d_cek->id,
+					'admin_id_unit'  => $d_cek->id_unit,
+					'admin_user'     => $d_cek->username,
+					'admin_nama'     => $d_cek->nama,
+					'admin_ta'       => $ta,
+					'admin_level'    => $d_cek->level,
+					'admin_apps'     => $d_cek->apps,
+					'admin_valid'    => true
                     );
             $this->session->set_userdata($data);
             /* log file */

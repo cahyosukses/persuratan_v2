@@ -25,53 +25,53 @@
 					<div class="col-lg-12">
 						<div class="table-responsive">
 							<?php echo $this->session->flashdata("k");?>
-			<table class="table table-bordered table-hover">
-				<thead>
-					<tr>
-						<th width="32%">Asal Disposisi, <i>Isi Disposisi</i></th>
-						<th width="25%">Intruksi<br>Perihal Surat</th>
-						<th width="18%">Kecepatan<br>Dateline</th>
-						<th width="25%">Aksi</th>
-					</tr>
-				</thead>
-				
-				<tbody>
-					<?php 
-					if (empty($data)) {
-						echo "<tr><td colspan='6' style='text-align: center; font-weight: bold'><div class='alert alert-danger' style='margin-bottom: 0px'>Data tidak ditemukan</div></td></tr>";
-					} else {
-						$no 	= ($this->uri->segment(4) + 1);
-						foreach ($data as $b) {
-					?>
-					<tr>
-						<td><?php echo $b->nama_user." (".$b->level.")<br>".$b->tujuan."<br><b>Catatan : </b><i>".$b->isi_disposisi."</i>";?></td>
-						<td><?php echo $b->intruksi."<br><b>Perihal : </b><i>".$b->perihal_surat."</i><br><a href='".base_URL()."upload/surat_masuk/".$b->file_surat."' target='_blank' class='label label-success'>File attachment</a>";?></td>
-						<td><?php echo $b->kecepatan."<br><i>".tgl_jam_sql($b->tgl_end)."</i>";?></td>
-						
-						<td class="ctr">
-							<div class="btn-group">
-								<?php 
-								if ($b->flag_lanjut == "Y") {
-								?>
-									<a href="<?php echo base_URL()."upload/disposisi_tanggapan/".gval("disposisi_tanggapan", "id_disposisi", "file", $b->id);?>" target="_blank" class="btn btn-success btn-sm" title="OK"><i class="fa fa-hand-o-right">  </i> Sudah ditindaklanjuti</a>
-								<?php } else { ?>
-									<a href="<?=base_URL().$admin_apps?>/disposisi_keluar/add/<?=$b->id?>/disposisi" class="btn btn-info btn-sm" title="Disposisi"><i class="fa fa-hand-o-right">  </i> Disposisi</a>
-									<a href="<?=base_URL().$admin_apps?>/disposisi_tanggapan/add/<?=$b->id?>" class="btn btn-success btn-sm" title="Tanggapi"><i class="fa fa-edit"> </i> Tanggapi</a>
-									<a href="#unit" role="button" onclick="return setData('<?php echo $b->id."', '".$b->id_rel; ?>');" data-toggle="modal"  class="btn btn-danger btn-sm" title="Tolak"><i class="fa fa-minus-circle"> </i> Tolak</a>
-								<?php } ?>
-								<!--<a href="<?=base_URL()?>apps/surat_masuk/del/<?=$b->id?>" class="btn btn-warning btn-sm" title="Hapus Data" onclick="return confirm('Anda Yakin..?')"><i class="fa fa-times">  </i> Del</a>-->
-							</div>	
-						</td>
-					</tr>
-					<?php 
-						$no++;
-						}
-					}
-					?>
-				</tbody>
-			</table>
-		<center><ul class="pagination"><?php echo $pagi; ?></ul></center>
-	</div>
+							<table class="table table-bordered table-hover">
+								<thead>
+									<tr>
+										<th width="32%">Asal Disposisi, <i>Isi Disposisi</i></th>
+										<th width="25%">Intruksi<br>Perihal Surat</th>
+										<th width="18%">Kecepatan<br>Dateline</th>
+										<th width="25%">Aksi</th>
+									</tr>
+								</thead>
+								
+								<tbody>
+									<?php 
+									if (empty($data)) {
+										echo "<tr><td colspan='6' style='text-align: center; font-weight: bold'><div class='alert alert-danger' style='margin-bottom: 0px'>Data tidak ditemukan</div></td></tr>";
+									} else {
+										$no 	= ($this->uri->segment(4) + 1);
+										foreach ($data as $b) {
+									?>
+									<tr>
+										<td><?php echo $b->nama_user." (".$b->level.")<br>".$b->tujuan."<br><b>Catatan : </b><i>".$b->isi_disposisi."</i>";?></td>
+										<td><?php echo $b->intruksi."<br><b>Perihal : </b><i>".$b->perihal_surat."</i><br><a href='".base_URL()."upload/surat_masuk/".$b->file_surat."' target='_blank' class='label label-success'>File attachment</a>";?></td>
+										<td><?php echo $b->kecepatan."<br><i>".tgl_jam_sql($b->tgl_end)."</i>";?></td>
+										
+										<td class="ctr">
+											<div class="btn-group">
+												<?php 
+												if ($b->flag_lanjut == "Y") {
+												?>
+													<a href="<?php echo base_URL()."upload/disposisi_tanggapan/".gval("disposisi_tanggapan", "id_disposisi", "file", $b->id);?>" target="_blank" class="btn btn-success btn-sm" title="OK"><i class="fa fa-hand-o-right">  </i> Sudah ditindaklanjuti</a>
+												<?php } else { ?>
+													<a href="<?=base_URL().$admin_apps?>/disposisi_keluar/add/<?=$b->id?>/disposisi" class="btn btn-info btn-sm" title="Disposisi"><i class="fa fa-hand-o-right">  </i> Disposisi</a>
+													<a href="<?=base_URL().$admin_apps?>/disposisi_tanggapan/add/<?=$b->id?>" class="btn btn-success btn-sm" title="Tanggapi"><i class="fa fa-edit"> </i> Tanggapi</a>
+													<a href="#unit" role="button" onclick="return setData('<?php echo $b->id."', '".$b->id_rel; ?>');" data-toggle="modal"  class="btn btn-danger btn-sm" title="Tolak"><i class="fa fa-minus-circle"> </i> Tolak</a>
+												<?php } ?>
+												<!--<a href="<?=base_URL()?>apps/surat_masuk/del/<?=$b->id?>" class="btn btn-warning btn-sm" title="Hapus Data" onclick="return confirm('Anda Yakin..?')"><i class="fa fa-times">  </i> Del</a>-->
+											</div>	
+										</td>
+									</tr>
+									<?php 
+										$no++;
+										}
+									}
+									?>
+								</tbody>
+							</table>
+							<center><ul class="pagination"><?php echo $pagi; ?></ul></center>
+						</div>
 						<!-- /.table-responsive -->
 					</div>
 				</div>
