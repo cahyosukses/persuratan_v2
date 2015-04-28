@@ -368,7 +368,7 @@ $q_instansi	= $this->db->query("SELECT * FROM instansi LIMIT 1")->row();
 						$nama	= gval("menu", "id", "nama", $pc_jumlah_menu[$i]);
 						//HACK-----------------
 						if($nama === 'Pelaporan'){
-							echo '<li><a href="'.base_URL().$admin_apps.'/'.$url.'" title="(i) Klik disini untuk melihat data '.$nama.'"><i class="fa fa-'.$ico.'"> </i> '.$nama.' { ' . $jml_pelaporan . ' }</a></li>';
+							echo '<li><a href="'.base_URL().$admin_apps.'/'.$url.'" title="(i) Klik disini untuk melihat data '.$nama.'"><i class="fa fa-'.$ico.'"> </i> '.$nama.' { ' . $jml_pelaporan . ' }</a></li>';							
 						}elseif($nama === 'Disp. Masuk'){
 							echo '<li><a href="'.base_URL().$admin_apps.'/'.$url.'" title="(i) Klik disini untuk melihat data '.$nama.'"><i class="fa fa-'.$ico.'"> </i> '.$nama.' { ' . $jml_disposisi_masuk . ' }</a></li>';
 						}elseif($nama === 'S. Masuk'){
@@ -398,8 +398,11 @@ $q_instansi	= $this->db->query("SELECT * FROM instansi LIMIT 1")->row();
 						}
 						//END HACK-
 						
+						
 					}
 				}
+				
+				echo '<li><a href="' . base_URL() . 'surat/arsip" title="(i) Klik disini untuk melihat data Arsip"><i class="fa fa-align-left"> </i> Arsip </a></li>';
 				
 				$level = $this->session->userdata('admin_level');
 				

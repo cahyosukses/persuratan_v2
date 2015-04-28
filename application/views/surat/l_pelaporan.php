@@ -29,11 +29,11 @@
 							<table class="table table-bordered table-hover">
 								<thead>
 									<tr>
-										<th width="15%">Tgl Pelaporan</i></th>
+										<th width="10%">Tgl Pelaporan</i></th>
 										<th width="20%">Pelapor ,Penerima</i></th>
 										<th width="20%">Perihal</i></th>
 										<th width="20%">Isi Laporan, File</th>
-										<th>Status</th>										
+										<th width="10%">Status</th>										
 										<th width="15%">Aksi</th>
 									</tr>
 								</thead>
@@ -63,7 +63,7 @@
 											<?php echo $b->perihal;?>
 										</td>
 										<td>
-											<pre style="margin-bottom: 0px;margin-top: 0px;padding:0px;background-color: #fff;border:0px"><b><?php echo $b->catatan;?></b></pre>
+											<b><?php echo $b->catatan;?></b><br/>
 											File : <a href="<?php echo base_URL() . 'upload/' . $b->file;?>" class="label label-success" target="_blank"><b>Download / Lihat</b></a>
 										</td>
 										<td class="ctr">

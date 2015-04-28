@@ -51,9 +51,10 @@ if ($mode == "edt" || $mode == "act_edt") {
 				<div class="col-lg-6">
 					<table  class="table-form">
 					<tr><td width="25%">No. Agenda</td><td><input type="text" name="no_agenda" required value="<?php echo gli3("surat_masuk", "no_agenda", 6, "WHERE flag_del = 'Y'"); ?>"class="form-control col-lg-3" tabindex="1"></td></tr>
-					<tr><td>Tanggal Surat</td><td><input type="text" name="tgl_surat" required value="<?php echo $tgl_surat; ?>" id="tgl_surat" class="form-control col-lg-5 tag_tgl" tabindex="2"></td></tr>	
-					<tr><td>Pengirim</td><td><input type="text" name="pengirim" required value="<?php echo $pengirim; ?>" id="pengirim" class="form-control col-lg-12" tabindex="3"></td></tr>		
-					<tr><td>Nomor Surat</td><td><input type="text" name="nomor" required value="<?php echo $nomor; ?>" class="form-control col-lg-12" tabindex="4"></td></tr>	
+					<tr><td>Tanggal Terima Surat</td><td><input type="text" name="tgl_diterima" required value="<?php echo $tgl_diterima; ?>" id="tgl_diterima" class="form-control col-lg-5 tag_tgl" tabindex="2"></td></tr>	
+					<tr><td>Tanggal Surat</td><td><input type="text" name="tgl_surat" required value="<?php echo $tgl_surat; ?>" id="tgl_surat" class="form-control col-lg-5 tag_tgl" tabindex="3"></td></tr>	
+					<tr><td>Pengirim</td><td><input type="text" name="pengirim" required value="<?php echo $pengirim; ?>" id="pengirim" class="form-control col-lg-12" tabindex="4"></td></tr>		
+					<tr><td>Nomor Surat</td><td><input type="text" name="nomor" required value="<?php echo $nomor; ?>" class="form-control col-lg-12" tabindex="5"></td></tr>	
 					<tr><td colspan="2">
 					</td></tr>
 					</table>

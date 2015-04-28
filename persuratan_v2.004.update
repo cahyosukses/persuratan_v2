@@ -1,0 +1,53 @@
+TRUNCATE `menu`;
+INSERT INTO `menu` (`id`, `sub_dari`, `nama`, `url`, `icon`) VALUES
+	(1, 'instansi', 'Instansi', 'atur_instansi', 'briefcase'),
+	(2, 'instansi', 'Pengguna', 'atur_user', 'user'),
+	(3, 'surat', 'S. Masuk', 'surat_masuk', 'folder-open-o'),
+	(4, 'surat', 'S. Keluar', 'surat_keluar', 'folder'),
+	(5, 'surat', 'Disp. Masuk', 'disposisi_masuk', 'hand-o-right'),
+	(6, 'surat', 'Disp. Keluar', 'disposisi_keluar', 'hand-o-down'),
+	(7, 'surat', 'Konsep', 'konsep', 'align-left'),
+	(8, 'surat', 'Pelaporan', 'pelaporan', 'align-left'),
+	(9, 'instansi', 'Setting Header', 'setting_header', 'star'),
+	(12, 'surat', 'Jenis Surat', 'jenis_surat', 'thumb-tack'),
+	(13, 'instansi', 'Kode Hal Organisasi', 'kode_hal_org', 'envelope-o'),
+	(14, 'instansi', 'Kode Surat', 'kode_surat', 'envelope-o');
+	
+CREATE TABLE `arsip` (
+	`id` INT(10) NOT NULL AUTO_INCREMENT,
+	`pengirim` VARCHAR(10) NOT NULL,
+	`pengirim_user` INT(5) NOT NULL,	
+	`tgl_surat` DATE NOT NULL,
+	`penerima` VARCHAR(200) NOT NULL,
+	`id_jenis_surat` INT(11) NOT NULL,
+	`perihal` TEXT NOT NULL,
+	`file` VARCHAR(255) NOT NULL,
+	PRIMARY KEY (`id`)
+)
+COLLATE='latin1_swedish_ci'
+ENGINE=MyISAM
+AUTO_INCREMENT=1;
+
+ALTER TABLE `arsip`	ADD COLUMN `no_surat` VARCHAR(50) NOT NULL AFTER `tgl_surat`;
+
+CREATE TABLE `angka_romawi` (
+	`latin` TINYINT(4) NULL DEFAULT NULL,
+	`romawi` VARCHAR(50) NULL DEFAULT NULL
+)
+COLLATE='latin1_swedish_ci'
+ENGINE=InnoDB;
+
+DELETE FROM `angka_romawi`;
+INSERT INTO `angka_romawi` (`latin`, `romawi`) VALUES
+	(1, 'I'),
+	(2, 'II'),
+	(3, 'III'),
+	(4, 'IV'),
+	(5, 'V'),
+	(6, 'VI'),
+	(7, 'VII'),
+	(8, 'VIII'),
+	(9, 'IX'),
+	(10, 'X'),
+	(11, 'XI'),
+	(12, 'XII');

@@ -1,0 +1,19 @@
+ALTER TABLE `surat_masuk` 
+	CHANGE COLUMN `tgl_diterima` `tgl_diterima` DATE NOT NULL AFTER `id`;
+	
+ALTER TABLE `disposisi`
+	CHANGE COLUMN `tgl_end` `tgl_end` DATE NOT NULL AFTER `kecepatan`;
+
+
+CREATE TABLE `sessions` (
+	`session_id` VARCHAR(40) NOT NULL DEFAULT '0',
+	`ip_address` VARCHAR(45) NOT NULL DEFAULT '0',
+	`user_agent` VARCHAR(120) NULL DEFAULT NULL,
+	`last_activity` INT(10) UNSIGNED NOT NULL DEFAULT '0',
+	`user_data` TEXT NOT NULL,
+	`prevent_update` INT(10) NULL DEFAULT NULL,
+	PRIMARY KEY (`session_id`),
+	INDEX `last_activity_idx` (`last_activity`)
+)
+COLLATE='latin1_swedish_ci'
+ENGINE=InnoDB;

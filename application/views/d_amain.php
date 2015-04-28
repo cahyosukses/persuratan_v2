@@ -27,6 +27,12 @@
 			
 			?>
 			
+			<div class="col-lg-3" style="text-align: center;">
+				<a href="<?php echo base_url() . 'surat/arsip/'?>" class="thumbnail" title="(i) Shortcut Menu ini digunakan untuk melihat data Arsip">
+					<i class="fa fa-align-left" style="font-size: 80px; margin: 10px 0"></i><br>
+					<h4 class="">Arsip</h4>
+				</a>
+			</div>';
 		</div>
 			<!-- /.panel-body -->
 			</div>

@@ -4,19 +4,8 @@ class Surat extends CI_Controller {
 	function __construct() {
 		parent::__construct();
 		$this->load->model('web_model');
+		date_default_timezone_set("Asia/Jakarta"); 
 	}
-	
-	//function _count_surat_masuk(){
-	//	$a['admin_id_unit']		= $this->session->userdata('admin_id_unit');
-	//	
-	//	$wh = empty($a['admin_id_unit']) ? "" : "WHERE penerima = '".$a['admin_id_unit']."'";
-	//	$a	= $this->db->query("SELECT COUNT(surat_masuk.id) as belum_dibaca
-	//							FROM surat_masuk
-	//							INNER JOIN unit ON surat_masuk.penerima = unit.kode_gabung
-	//							$wh  AND flag_del = 'Y' AND flag_read = 'N'");
-	//	return $a->row();
-	//	
-	//}
 	
 	public function index() {
 		$admin_valid			= $this->session->userdata('admin_valid');
@@ -37,6 +26,193 @@ class Surat extends CI_Controller {
 		
 		$this->load->view('aaa', $a);
 	} 
+	
+	public function arsip(){
+
+		$a['admin_id']			= $this->session->userdata('admin_id');
+		$a['admin_id_unit']		= $this->session->userdata('admin_id_unit');
+		$a['admin_user']		= $this->session->userdata('admin_user');
+		$a['admin_nama']		= $this->session->userdata('admin_nama');
+		$a['admin_ta']			= $this->session->userdata('admin_ta');
+		$a['admin_level']		= $this->session->userdata('admin_level');
+		$a['admin_apps']		= $this->session->userdata('admin_apps');
+		$a['admin_valid']		= $this->session->userdata('admin_valid');
+		$a['menu']				= $this->db->query("SELECT id_menu FROM pengguna WHERE id = ".$a['admin_id']."")->row();		
+		
+		if ($a['admin_valid'] == FALSE || $a['admin_id'] == "") { redirect("dashboard/login"); } 		
+		
+		$a['user']				= $this->db->query("SELECT * FROM pengguna WHERE status = 'Y'")->result();
+		
+		/* pagination */	
+		$total_row				= $this->db->query("SELECT * FROM arsip")->num_rows();
+		$per_page				= 10;
+		$awal					= $this->uri->segment(4); 
+		$awal					= (empty($awal) || $awal == 1) ? 0 : $awal;
+		
+		$akhir					= $per_page;		
+		$a['pagi']				= _page($total_row, $per_page, 4, base_url()."surat/arsip/p");
+		
+		//ambil variabel URL
+		$mau_ke					= $this->uri->segment(3);
+		$idu					= $this->uri->segment(4);
+			
+		$cari					= addslashes($this->input->post('q'));
+		$a['cari'] 				= $cari;
+
+		$config['upload_path']   = './upload/surat_keluar';		
+		$config['allowed_types'] = 'gif|jpg|png|pdf|doc|docx';
+		$config['max_size']      = '8000';
+		$config['max_width']     = '3000';
+		$config['max_height']    = '3000';
+		$config['encrypt_name']  = TRUE;
+
+		$this->load->library('upload', $config);
+
+		if( $mau_ke === 'add'){
+
+			$a['page']		= "surat/f_arsip";
+
+		}elseif ($mau_ke == "act_add") {	
+
+			$this->load->model('basecrud_m');
+
+			$tgl_surat    = addslashes($this->input->post('tgl_surat'));
+			$no_surat     = addslashes($this->input->post('no_surat'));
+			$penerima     = addslashes($this->input->post('penerima'));
+			$jenis_syurat = addslashes($this->input->post('jenis_syurat'));
+			$perihal      = addslashes($this->input->post('perihal'));
+
+			if ($this->upload->do_upload('file_surat')) {
+				$up_data	 	= $this->upload->data();				
+
+				$ins = array(
+								'pengirim'       => $a['admin_id_unit'],
+								'pengirim_user'  => $a['admin_id'],
+								'tgl_surat'      => $tgl_surat,
+								'no_surat'       => $no_surat,
+								'penerima'       => $penerima,
+								'id_jenis_surat' => $jenis_syurat,
+								'perihal'        => $perihal,
+								'file'           => $up_data['file_name']
+				);
+				$this->basecrud_m->insert('arsip',$ins);
+
+				
+			} else {
+				$ins = array(
+								'pengirim'       => $a['admin_id_unit'],
+								'pengirim_user'  => $a['admin_id'],
+								'tgl_surat'      => $tgl_surat,
+								'no_surat'       => $no_surat,
+								'penerima'       => $penerima,
+								'id_jenis_surat' => $jenis_syurat,
+								'perihal'        => $perihal
+				);
+
+				$this->basecrud_m->insert('arsip',$ins);
+			}	
+					
+			
+			$this->session->set_flashdata("k", "<div class=\"alert alert-success\" id=\"alert\">Data ditambahkan ".$this->upload->display_errors()."</div>");
+			redirect('surat/arsip');
+
+		}elseif ($mau_ke == "edit"){
+
+			$a['datdet']	= $this->db->query("SELECT * FROM arsip WHERE id = '$idu'")->row();
+			$a['page']		= "surat/f_arsip";
+
+		}elseif ($mau_ke == "act_edt") {
+
+			$this->load->model('basecrud_m');
+
+			$idp		  = addslashes($this->input->post('idp'));
+			$tgl_surat    = addslashes($this->input->post('tgl_surat'));
+			$no_surat     = addslashes($this->input->post('no_surat'));
+			$penerima     = addslashes($this->input->post('penerima'));
+			$jenis_syurat = addslashes($this->input->post('jenis_syurat'));
+			$perihal      = addslashes($this->input->post('perihal'));
+
+			if ($this->upload->do_upload('file_surat')) {
+				$up_data	 	= $this->upload->data();				
+
+				$upd = array(
+								'pengirim'       => $a['admin_id_unit'],
+								'pengirim_user'  => $a['admin_id'],
+								'tgl_surat'      => $tgl_surat,
+								'no_surat'       => $no_surat,
+								'penerima'       => $penerima,
+								'id_jenis_surat' => $jenis_syurat,
+								'perihal'        => $perihal,
+								'file'           => $up_data['file_name']
+				);
+
+				$this->basecrud_m->update('arsip',$idp,$upd);
+
+				
+			} else {
+				$upd = array(
+								'pengirim'       => $a['admin_id_unit'],
+								'pengirim_user'  => $a['admin_id'],
+								'tgl_surat'      => $tgl_surat,
+								'no_surat'       => $no_surat,
+								'penerima'       => $penerima,
+								'id_jenis_surat' => $jenis_syurat,
+								'perihal'        => $perihal
+				);
+
+				$this->basecrud_m->update('arsip',$idp,$upd);
+			}	
+					
+			
+			$this->session->set_flashdata("k", "<div class=\"alert alert-success\" id=\"alert\">Data telah diupdate. ".$this->upload->display_errors()."</div>");
+			redirect('surat/arsip');
+
+		}elseif ($mau_ke == "del") {
+
+			$filenya	= gval("arsip", "id", "file", $idu);
+			@unlink("./upload/surat_keluar/".$filenya);
+			$this->db->query("DELETE FROM arsip WHERE id = '$idu'");
+			$this->session->set_flashdata("k", "<div class=\"alert alert-success\" id=\"alert\">Data dihapus </div>");
+			redirect('surat/arsip');
+
+		} else if ($mau_ke == "cari") {
+			
+			$a['data']		= $this->db->query("SELECT * FROM arsip WHERE perihal LIKE '%$cari%' ORDER BY id DESC")->result();
+			$a['page']		= "surat/l_arsip";
+
+		} else if ($mau_ke == "detil") {
+			
+			$data			= $this->db->query("SELECT *, unit.nama_unit AS unit_pengirim,r_jenis_surat.nama as jenis_surat,
+													(SELECT pengguna.nama 
+													 FROM pengguna 
+													 WHERE id = arsip.pengirim_user) AS pembuat
+												FROM arsip
+												INNER JOIN unit ON unit.kode_gabung = arsip.pengirim
+												INNER JOIN r_jenis_surat ON r_jenis_surat.id = arsip.id_jenis_surat
+												WHERE arsip.id = '".$_GET['id']."'")->row();
+			if (!empty($data)) { 
+				echo "<table class='table-form' width='100%'>
+						<tr><td width='30%'>Unit Pengirim</td><td width='5%'>:</td><td width='65%'>".$data->unit_pengirim."</td></tr>
+						<tr><td>Dibuat oleh</td><td>:</td><td>".$data->pembuat."</td></tr>
+						<tr><td>Tgl. Surat</td><td>:</td><td>".tgl_jam_sql($data->tgl_surat)."</td></tr>						
+						<tr><td>Nomor Surat</td><td>:</td><td>".$data->no_surat."</td></tr>
+						<tr><td>Jenis Surat</td><td>:</td><td>".$data->jenis_surat."</td></tr>
+						<tr><td>Penerima</td><td>:</td><td>".$data->penerima."</td></tr>
+						<tr><td>Perihal</td><td>:</td><td>".$data->perihal."</td></tr>
+					  </table>";
+			}			
+			exit;
+		} else {
+			$a['data']		= $this->db->query("SELECT arsip.* 
+				                                FROM arsip
+				                                ORDER BY tgl_surat DESC
+												LIMIT $awal, $akhir ")->result();
+			
+			$a['page']		= "surat/l_arsip";
+		}
+		
+		$this->load->view('aaa', $a);
+	}
 	
 	public function surat_masuk() {
 		$a['admin_id']			= $this->session->userdata('admin_id');
@@ -71,7 +247,7 @@ class Surat extends CI_Controller {
 
 		//ambil variabel Postingan
 		$idp					= addslashes($this->input->post('idp'));
-		//$tgl_diterima			= addslashes($this->input->post('tgl_diterima'));
+		$tgl_diterima			= addslashes($this->input->post('tgl_diterima'));
 		$tgl_surat				= addslashes($this->input->post('tgl_surat'));
 		$pengirim				= addslashes($this->input->post('pengirim'));
 		$nomor					= addslashes($this->input->post('nomor'));
@@ -123,9 +299,9 @@ class Surat extends CI_Controller {
 			if ($this->upload->do_upload('file_surat')) {
 				$up_data	 	= $this->upload->data();
 				
-				$this->db->query("INSERT INTO surat_masuk VALUES (NULL, NOW(), '$tgl_surat', '$pengirim', '$nomor', '$no_agenda', '$penerima', '$tembusan', '$perihal', '$kecepatan', '".$up_data['file_name']."', 'N', 'Y', 'N', 'N', '')");
+				$this->db->query("INSERT INTO surat_masuk VALUES (NULL, '$tgl_diterima', '$tgl_surat', '$pengirim', '$nomor', '$no_agenda', '$penerima', '$tembusan', '$perihal', '$kecepatan', '".$up_data['file_name']."', 'N', 'Y', 'N', 'N', '')");
 			} else {
-				$this->db->query("INSERT INTO surat_masuk VALUES (NULL, NOW(), '$tgl_surat', '$pengirim', '$nomor', '$no_agenda', '$penerima', '$tembusan', '$perihal', '$kecepatan', '', 'N', 'Y', 'N', 'N', '')");
+				$this->db->query("INSERT INTO surat_masuk VALUES (NULL, '$tgl_diterima', '$tgl_surat', '$pengirim', '$nomor', '$no_agenda', '$penerima', '$tembusan', '$perihal', '$kecepatan', '', 'N', 'Y', 'N', 'N', '')");
 			}
 			
 			$email_kir	= "";
@@ -158,9 +334,9 @@ class Surat extends CI_Controller {
 				$filenya		= gval("surat_masuk", "id", "file", $idp);
 				@unlink("./upload/surat_masuk/".$filenya);
 							
-				$this->db->query("UPDATE surat_masuk SET tgl_surat = '$tgl_surat', pengirim = '$pengirim', nomor = '$nomor', no_agenda = '$no_agenda', penerima = '$penerima', tembusan = '$tembusan', perihal = '$perihal', kecepatan = '$kecepatan', file = '".$up_data['file_name']."' WHERE id = '$idp'");
+				$this->db->query("UPDATE surat_masuk SET tgl_diterima = '$tgl_diterima',tgl_surat = '$tgl_surat', pengirim = '$pengirim', nomor = '$nomor', no_agenda = '$no_agenda', penerima = '$penerima', tembusan = '$tembusan', perihal = '$perihal', kecepatan = '$kecepatan', file = '".$up_data['file_name']."' WHERE id = '$idp'");
 			} else {
-				$this->db->query("UPDATE surat_masuk SET tgl_surat = '$tgl_surat', pengirim = '$pengirim', nomor = '$nomor', no_agenda = '$no_agenda', penerima = '$penerima', tembusan = '$tembusan', perihal = '$perihal', kecepatan = '$kecepatan' WHERE id = '$idp'");
+				$this->db->query("UPDATE surat_masuk SET tgl_diterima = '$tgl_diterima',tgl_surat = '$tgl_surat', pengirim = '$pengirim', nomor = '$nomor', no_agenda = '$no_agenda', penerima = '$penerima', tembusan = '$tembusan', perihal = '$perihal', kecepatan = '$kecepatan' WHERE id = '$idp'");
 			}	
 			
 			$this->session->set_flashdata("k", "<div class=\"alert alert-success\" id=\"alert\">Data diupdate. ".$this->upload->display_errors()."</div>");			
@@ -181,6 +357,10 @@ class Surat extends CI_Controller {
 			$this->db->query("UPDATE surat_masuk SET flag_read = 'Y' WHERE id = $idu");
 			
 		} else {
+			
+			$this->load->library('cart');
+			$this->cart->destroy();
+
 			$wh = empty($a['admin_id_unit']) ? "" : "WHERE penerima = '".$a['admin_id_unit']."'";
 			$a['data']		= $this->db->query("SELECT surat_masuk.*, unit.nama_unit AS penerimanya, 
 												(SELECT nama_unit FROM unit WHERE kode_gabung = surat_masuk.tembusan) AS tembusannya
@@ -379,6 +559,7 @@ class Surat extends CI_Controller {
 	}
 		
 	public function disposisi_keluar() {
+		
 		$a['admin_id']			= $this->session->userdata('admin_id');
 		$a['admin_id_unit']		= $this->session->userdata('admin_id_unit');
 		$a['admin_user']		= $this->session->userdata('admin_user');
@@ -407,6 +588,10 @@ class Surat extends CI_Controller {
 		$cari					= addslashes($this->input->post('q'));//pencarian
 
 		if ($mau_ke == "add") {
+			
+			$this->load->library('cart');
+			$this->load->model('basecrud_m');
+
 			$id_data		= $this->uri->segment(4);
 			$asal_data		= $this->uri->segment(5);
 			
@@ -430,9 +615,171 @@ class Surat extends CI_Controller {
 														WHERE disposisi.id_surat = '".$q_ambil_id_surat->id_surat."'")->result();
 				$a['page']			= "surat/f_disposisi_out_disposisi";		
 			}
+		}elseif($mau_ke === 'del_disposisi'){
+
+			$this->load->library('cart');
+			$param	= $this->uri->segment(4);
+
+			$data = array(
+				'rowid' => $param,
+				'qty'   => 0);
+
+			$this->cart->update($data);
 			
+			echo $this->cart->total_items();
+			exit(0);
+
+		}elseif($mau_ke === 'add_disposisi'){
+			/*			
+				UPDATE : 003
+				-multiple disposisi
+			*/
+			$this->load->library('cart');
+			$this->load->model('basecrud_m');
+
+			/*
+					$item['id_surat'];
+					$item['asal'],									
+					$item['id_surat'],
+					$a['admin_id_unit'],
+					$a['admin_id'],
+					$item['penerima'],
+					$item['user'],
+					$item['intruksi'],
+					$item['kecepatan'],
+					$item['tgl_selesai'],
+					$item['isi_disposisi']
+			 */
+			
+			$data = array(
+				'id'            => uniqid(),				
+				'name'          => uniqid(),				
+				'qty'           => 666,
+				'price'         => 666,
+				'id_surat'      => $this->input->post('id_surat'),
+				'asal'          => $this->input->post('asal'),
+				'penerima'      => $this->input->post('penerima'),
+				'user'          => $this->input->post('user'),
+				'intruksi'      => $this->input->post('intruksi'),
+				'kecepatan'     => $this->input->post('kecepatan'),
+				'tgl_selesai'   => $this->input->post('tgl_selesai'),
+				'isi_disposisi' => $this->input->post('isi_disposisi')
+			);
+			
+			$this->cart->insert($data);
+
+			$row = "";				
+			foreach ($this->cart->contents() as $item) {
+				//penerima, user,instruksi,isi disposisi,kecepatan,tgl_selesai
+				$nama_unit = $this->basecrud_m->get_where('unit',array('kode_gabung' => $item['penerima']))->row()->nama_unit;
+				$nama_penerima = $this->basecrud_m->get_where('pengguna',array('id' => $item['user']))->row()->nama;
+
+				$label_kec = null;
+				$kec = $item['kecepatan'];
+				if($kec === 'sangat segera'){
+					$label_kec = 'label-danger';
+				}elseif($kec === 'segera'){
+					$label_kec = 'label-warning';
+				}else{
+					$label_kec = 'label-success';
+				}
+
+				/*
+				
+				Kecepatan : <div class="label <?php echo $label_kec;?>"><?php echo $item['kecepatan'];?></div><br>
+            	Intruksi : <?php echo $item['intruksi'];?><br>
+            	<?php echo $item['isi_disposisi'];?><br>   
+
+				 */
+				$row .= '<tr id="row_' . $item['rowid'] .'">														
+							<td>' . $nama_unit . ' <br>' . $nama_penerima . '</td>													
+                            <td>Kecepatan : <div class="label ' . $label_kec . '">' . $item['kecepatan'] . '</div><br>		
+                                Intruksi  : ' . $item['intruksi'] . '<br>' . $item['isi_disposisi'] . 
+                            '</td>
+                            <td>' . $item['tgl_selesai'] . '</td>
+							<td class="ctr">
+								<div class="btn-group">                                                                         
+									<button type="button" class="btn btn-danger btn-sm" onclick="del_disposisi(\''. $item['rowid'] . '\')"><i class="fa fa-trash-o "></i>Hapus</button>                                         
+								</div>
+							</td>
+						</tr>';       
+			}
+			
+			echo $row;
+			exit(0);
+
 		} else if ($mau_ke == "act_add") {	
-			cek_empty_post("apps/surat_masuk");
+			//cek_empty_post("apps/surat_masuk");
+			
+			/*
+				UPDATE: 003
+				-multiple disposisi
+
+			 */
+			$this->load->library('cart');
+			$this->load->model('basecrud_m');
+			$date_now = date('Y-m-d H:i:s');
+
+			foreach ($this->cart->contents() as $item) {
+
+				/*
+				
+							1	NULL, 
+								'$id_surat', 
+								'$asal', 
+								'$id_surat', 
+							5	'".$a['admin_id_unit']."', 
+								'".$a['admin_id']."', 
+								'$penerima', 
+								'$user', 
+								'$intruksi', 
+							10	'$kecepatan', 
+								'$tgl_selesai', 
+								'$isi_disposisi', 
+								NOW(), 
+								'N', 
+							15	'N', 
+								'N', 
+								'', 
+							18	'$disp_ke')"
+
+				 */	
+				
+				$id_surat  = $item['id_surat'];
+				$g_disp_ke = gli3("disposisi", "disp_ke", 1, "WHERE id_surat = $id_surat");			
+				$disp_ke   = $item['asal'] === "surat" ? 1 : $g_disp_ke;	
+
+				$data = array(
+								'id_surat'      => $id_surat,									
+								'asal'          => $item['asal'],									
+								'id_rel'        => $item['id_surat'],
+								'dari'          => $a['admin_id_unit'],
+								'dari_user'     => $a['admin_id'],
+								'penerima'      => $item['penerima'],
+								'penerima_user' => $item['user'],
+								'intruksi'      => $item['intruksi'],
+								'kecepatan'     => $item['kecepatan'],
+								'tgl_end'       => $item['tgl_selesai'],
+								'isi_disposisi' => $item['isi_disposisi'],
+								'tgl_input'     => $date_now,
+								'flag_read'     => 'N',
+								'flag_lanjut'   => 'N',
+								'flag_tolak'    => 'N',
+								'alasan'        => '',
+								'disp_ke'       => $disp_ke
+						);
+				
+							
+
+				$this->basecrud_m->insert('disposisi',$data);
+			}
+
+			$this->cart->destroy();
+			$this->db->query("UPDATE surat_masuk SET flag_lanjut = 'Y' WHERE id = '$id_surat'");
+			$this->session->set_flashdata("k", "<div class=\"alert alert-success\" id=\"alert\">Data ditambahkan</div>");			
+			redirect('surat/disposisi_keluar');
+
+			/*
 			$idp			= addslashes($this->input->post('idp'));
 			$id_data		= addslashes($this->input->post('id_data'));
 			$id_surat		= addslashes($this->input->post('id_surat'));
@@ -448,12 +795,31 @@ class Surat extends CI_Controller {
 			
 			$disp_ke		= $asal == "surat" ? 1 : $g_disp_ke;
 			
-			$this->db->query("INSERT INTO disposisi VALUES (NULL, '$id_surat', '$asal', '$id_surat', '".$a['admin_id_unit']."', '".$a['admin_id']."', '$penerima', '$user', '$intruksi', '$kecepatan', '$tgl_selesai', '$isi_disposisi', NOW(), 'N', 'N', 'N', '', '$disp_ke')");
+			$this->db->query("INSERT INTO disposisi VALUES (
+								NULL, 
+								'$id_surat', 
+								'$asal', 
+								'$id_surat', 
+								'".$a['admin_id_unit']."', 
+								'".$a['admin_id']."', 
+								'$penerima', 
+								'$user', 
+								'$intruksi', 
+								'$kecepatan', 
+								'$tgl_selesai', 
+								'$isi_disposisi', 
+								NOW(), 
+								'N', 
+								'N', 
+								'N', 
+								'', 
+								'$disp_ke')");
 			$this->db->query("UPDATE surat_masuk SET flag_lanjut = 'Y' WHERE id = '$id_surat'");
 			
 			$this->session->set_flashdata("k", "<div class=\"alert alert-success\" id=\"alert\">Data ditambahkan</div>");
 			
 			redirect('surat/disposisi_keluar');
+			*/
 			
 		} else if ($mau_ke == "detil") {
 			$a['data']		= $this->db->query("SELECT disposisi.*, pengguna.level AS level, pengguna.nama AS nama_user,
@@ -499,6 +865,8 @@ class Surat extends CI_Controller {
 			exit(0);
 			
 		} else {
+
+			
 			$a['data']		= $this->db->query("SELECT disposisi.*, pengguna.level AS level, pengguna.nama AS nama_user,
 												unit.nama_unit AS tujuan FROM disposisi 
 												INNER JOIN unit ON disposisi.penerima = unit.kode_gabung 
@@ -676,12 +1044,13 @@ class Surat extends CI_Controller {
 		$nomor_surat = $this->db->query(" SELECT CONCAT(LPAD(a.id,3,'0'),'/',
 												 IFNULL(c.kode,'_________'),'/',
 												 IFNULL(d.kode,'___'),'/',
-												 MONTH(a.tgl_surat),'/',
+												 e.romawi,'/',
 												 YEAR(a.tgl_surat)) as nomor_surat 
 										  FROM surat_keluar a
 										  LEFT JOIN pengguna b ON a.pengirim_user = b.id
 										  LEFT JOIN kode_fkip c ON b.id_kode_fkip = c.id
 										  LEFT JOIN kode_hal_org d ON a.id_kode_hal_org = d.id
+										  LEFT JOIN angka_romawi e ON MONTH(a.tgl_surat) = e.latin
 										  WHERE a.id = $id")->row()->nomor_surat;
 		echo $nomor_surat;		
 	}

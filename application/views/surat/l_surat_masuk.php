@@ -43,8 +43,8 @@
 							<table class="table table-bordered table-hover">
 								<thead>
 									<tr>
-										<th width="10%">Tgl. Terima</th>
-										<th width="15%">Nomor Surat (Tgl. Surat), File</th>
+										<th width="10%">Tgl. Surat</th>
+										<th width="15%">Nomor Surat (Tgl. Terima Surat), File</th>
 										<th width="20%">Perihal</th>
 										<th width="20%">Pengirim, Penerima</th>
 										<th width="7%">Dibaca</th>
@@ -73,7 +73,7 @@
 									?>
 									<tr>
 										<td class="ctr"><?php echo tgl_jam_sql($b->tgl_surat);?></td>
-										<td><?=$b->nomor."<br>(".tgl_jam_sql($b->tgl_surat).")"?></td>
+										<td><?=$b->nomor."<br>(".tgl_jam_sql($b->tgl_diterima).")"?></td>
 										<td><?=$b->perihal."<br><b>File : </b> ".$filenya.""?></td>
 										<!--<td><?=$b->perihal."<br><b>File : </b> ".base_url() . 'surat_masuk/baca/'. $b->id . ""?></td>-->
 										<td><?="Dari : ".$b->pengirim."<br>Penerima : ".$b->penerimanya.""?></td>

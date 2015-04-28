@@ -120,6 +120,7 @@
 					<select name="jenis" style="width:200px">
 						<option <?php echo set_select('jenis','surat_keluar',TRUE);?> value="surat_keluar">Surat Keluar</option>
 						<option <?php echo set_select('jenis','surat_masuk');?> value="surat_masuk">Surat Masuk</option>
+						<option <?php echo set_select('jenis','arsip_surat');?> value="arsip_surat">Arsip Surat</option>
 					</select>
 					
 					<span style="width:120px;display:inline-block"></span>
@@ -187,7 +188,7 @@
 					<?php } ?>					
 							
 			</table>
-			<?php }}else{ ?>
+			<?php }}elseif($jenis === 'surat_keluar'){ ?>
 			<table class="gridtable" width="100%">
 				<tr>									
 					<th>No. Agenda<br><i>Tanggal</i></th>
@@ -230,6 +231,49 @@
 						</td>
 						<td><?php echo $cari->perihal."<br><b>Penerima : </b>".$cari->penerima?></td>
 						<td><?php echo $stat_setuju." - ".$stat_keluar; ?></td>
+					</tr>
+					<?php } ?>
+			</table>
+
+			<?php }}else{ ?>
+			<table class="gridtable" width="100%">
+				<tr>									
+					<th>Tanggal</th>
+					<th>Nomor Surat</th>
+					<th>Perihal</th>
+					<th>Penerima</th>
+					<th>File Attachment</th>
+				</tr>
+				<?php if ($r_cari->num_rows() == 0) { ?>
+					<tr>
+						<td colspan='5' style='text-align: center; font-weight: bold'><div class='alert alert-danger' style='margin-bottom: 0px'>Data tidak ditemukan</div></td>
+					</tr>
+					</table>
+				<?php }else{ ?>				
+					<?php foreach ($r_cari->result() as $cari){ ?>
+					<?php 
+						$allow_download = $this->session->userdata('allow_download');
+						$filenya = null;
+						$format_surat = null;
+
+						if($allow_download){
+							$filenya     = empty($cari->file) ? "<div class='label label-warning'>Tidak tersedia</div>" : "<a class='label label-success' href='".base_URL()."upload/surat_keluar/".$cari->file."' target='_blank'><b>Download / Lihat</b></a>";
+							//$format_surat = "<a class='label label-info' href='" . base_url() . "dashboard/pdf_report/" . $cari->id . "'><b>Download as PDF</b></a><br>";							
+						}else{
+							//jika belum masukin login
+							$filenya     = empty($cari->file) ? "<div class='label label-warning'>Tidak tersedia</div>" : "<a rel='modal:open' class='label label-success' onclick=\"set_vars('arsip_surat','Y'," . $cari->id . ")\" href='#ex1'><b>Download / Lihat</b></a>";
+							//$format_surat = "<a rel='modal:open' class='label label-info' onclick=\"set_vars('arsip_surat','N'," . $cari->id . ")\" href='#ex1'><b>Download as PDF</b></a><br>";							
+						}						
+					
+						$no_surat    = empty($cari->no_surat) ? "<span class='label label-danger'>Belum diberi nomor</span>" : $cari->no_surat;
+						
+					?>
+					<tr>
+						<td class="ctr"><?php echo tgl_jam_sql($cari->tgl_surat);?></td>
+						<td><?php echo $no_surat;?></td>
+						<td><?php echo $cari->perihal;?></td>
+						<td><?php echo $cari->penerima;?></td>
+						<td><?php echo $filenya; ?></td>
 					</tr>
 					<?php } ?>
 			</table>

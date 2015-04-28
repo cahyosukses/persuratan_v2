@@ -234,7 +234,6 @@ class Dashboard extends CI_Controller {
 		$data = array();
 		
 		$pdfFilePath = FCPATH.'/pdf/Surat_Keluar_'.date('dMy').'.pdf';
-		//echo $pdfFilePath;
 		// boost the memory limit if it's low <img src="http://davidsimpson.me/wp-includes/images/smilies/icon_wink.gif" alt=";)" class="wp-smiley">
 		ini_set('memory_limit','32M');
 		$data['rs_surat'] = $this->db->query(
@@ -281,6 +280,7 @@ class Dashboard extends CI_Controller {
 				$nosurat = $this->input->post('nosurat');
 				$jenis   = $this->input->post('jenis');
 
+				$data['jenis'] = $jenis;	
 				if($jenis === 'surat_masuk'){
 
 					$data['r_cari'] = 
@@ -296,9 +296,9 @@ class Dashboard extends CI_Controller {
 							INNER JOIN unit ON surat_masuk.penerima = unit.kode_gabung
 							WHERE flag_del = 'Y' AND nomor LIKE '%$nosurat%'
 							ORDER BY surat_masuk.tgl_diterima DESC");
-					$data['jenis']	 = 'surat_masuk';
+					
 
-				}else{
+				}elseif($jenis === 'surat_keluar'){
 
 					$data['r_cari'] = 
 						$this->db->query("
@@ -307,8 +307,15 @@ class Dashboard extends CI_Controller {
 							      AND flag_keluar = 'Y' 
 							      AND no_surat LIKE '%$nosurat%'
 							ORDER BY surat_keluar.tgl_surat DESC");
-					$data['jenis']	 = 'surat_keluar';
+					
 
+				}elseif ($jenis === 'arsip_surat'){
+					$data['r_cari'] = 
+						$this->db->query("
+							SELECT * FROM arsip
+							WHERE no_surat LIKE '%$nosurat%'
+							ORDER BY tgl_surat DESC");
+									
 				}
 			}
 		}
@@ -344,7 +351,7 @@ class Dashboard extends CI_Controller {
 					$this->pdf_report($id);
 				}
 
-			}else{
+			}elseif($jenis === 'surat_masuk'){
 				if($is_attachment === 'Y'){
 					$this->load->model('basecrud_m');
 
@@ -352,6 +359,20 @@ class Dashboard extends CI_Controller {
 
 					$this->load->helper('download');					
 					$data = file_get_contents( "./upload/surat_masuk/" . $fl->file ); // Read the file's contents
+					
+					force_download($fl->file, $data);	
+				}else{
+					//do nothing
+
+				}
+			}elseif($jenis === 'arsip_surat'){
+				if($is_attachment === 'Y'){
+					$this->load->model('basecrud_m');
+
+					$fl = $this->basecrud_m->get_where('arsip',array('id' => $id))->row();
+
+					$this->load->helper('download');					
+					$data = file_get_contents( "./upload/surat_keluar/" . $fl->file ); // Read the file's contents
 					
 					force_download($fl->file, $data);	
 				}else{
