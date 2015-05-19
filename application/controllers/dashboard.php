@@ -226,7 +226,7 @@ class Dashboard extends CI_Controller {
 		*/
 		
 		$this->session->unset_userdata('allow_download');
- 		$this->load->view('dashboard/new_login');
+ 		$this->load->view('dashboard/login_v2');
 	}
 	
 	function pdf_report($id){
@@ -320,7 +320,7 @@ class Dashboard extends CI_Controller {
 			}
 		}
 
-		$this->load->view('dashboard/jejak_surat',$data);
+		$this->load->view('dashboard/jejak_surat_v2',$data);
 	}
 	
 	function auth_download(){

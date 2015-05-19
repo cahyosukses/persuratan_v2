@@ -1,11 +1,11 @@
-body, pre {
-    background-color: #fff;
-    margin: 0px;
-    font-family: Lucida Grande, Verdana, Sans-serif;
-    color: #4F5155;
-    font:12px Verdana, Arial, Helvetica
+body {
+    background: url("page_bg.png") repeat-x scroll 50% 0 #fff;
+    color: #282828;
+    font-family: Arial,Helvetica,sans-serif;
+    font-size: 11px;
+    line-height: 140%;
+    
 }
-
 textarea {
     border:1px solid #a7bcbe;   
     font-family: Lucida Grande, Verdana, Sans-serif;
@@ -1023,7 +1023,7 @@ border:1px solid #dfdfdf;border-top:none;float:none;}
 /* ----------------------------------------------------------------------------------------------------------------*/
 
 
-html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;background:transparent;}
+html,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;background:transparent;}
 body{line-height:1}
 ol,ul{list-style:none;}
 blockquote,q{quotes:none;}
